@@ -36,6 +36,17 @@ public final class PacketBuilder {
     }
     
     /**
+     * Sets the opcode and size of the packet.
+     * 
+     * @param opcode    The opcode of the packet.
+     * @param size      The size of the packet.
+     */
+    public void setOpcodeAndSize(int opcode, PacketSize size) {
+        this.opcode = opcode;
+        this.size = size;
+    }
+    
+    /**
      * Converts the information provided by this builder to a packet.
      * 
      * @return  The created packet.
