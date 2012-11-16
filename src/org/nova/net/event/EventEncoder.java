@@ -9,7 +9,6 @@ package org.nova.net.event;
 
 import org.nova.event.Event;
 import org.nova.net.Packet;
-import org.nova.net.Packet;
 
 /**
  * Evelus Development
@@ -17,7 +16,7 @@ import org.nova.net.Packet;
  * 
  * The base class for all event to packet encoders.
  */
-public abstract class EventEncoder<T extends Event> {
+public interface EventEncoder<T extends Event> {
     
     /**
      * Encodes an event into a packet.
@@ -25,6 +24,6 @@ public abstract class EventEncoder<T extends Event> {
      * @param event The event to encode.
      * @return      The encoded packet.
      */
-    public abstract Packet encode(T event);
+    public Packet encode(T event);
 
 }

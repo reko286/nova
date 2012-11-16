@@ -14,9 +14,9 @@ import org.nova.net.Packet;
  * Evelus Development
  * Created by Hadyn Richard
  * 
- * The base class for all packet to event decoders.
+ * The interface for all packet to event decoders.
  */
-public abstract class EventDecoder<T extends Event> {
+public interface EventDecoder<T extends Event> {
     
     /**
      * Decodes an event from a packet.
@@ -24,6 +24,6 @@ public abstract class EventDecoder<T extends Event> {
      * @param packet    The packet to decode the event from.
      * @return          The decoded event.
      */
-    public abstract T decode(Packet packet);
+    public T decode(Packet packet);
 
 }
