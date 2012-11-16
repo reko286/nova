@@ -50,7 +50,7 @@ public final class EventHandlerChain<T extends Event> {
     /**
      * Creates a new {@link EventHandlerChainContext}.
      * 
-     * @param   event   The event to create the chain for.
+     * @param   event   The event to create the chain context for.
      * @return          The created {@link EventHandlerChainContext}.
      */
     public EventHandlerChainContext<T> createNewEventHandlerChainContext(T event) {
