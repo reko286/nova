@@ -1,8 +1,25 @@
 /**
- * Copyright Evelus, All Rights Reserved Unauthorized copying of this file, via
- * any medium is strictly prohibited Proprietary and confidential Written by
- * Hadyn Richard (sini@evel.us), July 2012
+ * Copyright (c) 2012, Hadyn Richard
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the "Software"), to deal 
+ * in the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in 
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+ * THE SOFTWARE.
  */
+
 package org.nova;
 
 import java.util.Map;
@@ -88,6 +105,22 @@ public abstract class Dispatcher {
         return handlerChains.get(event.getClass());
     }
     
+        
+    
+    public void addRequiredEvent(Class<? extends Event> eventClass) {
+    	requiredEvents.add(eventClass);
+    }
+    
+    /**
+     * Gets if the dispatcher requires an event.
+     * 
+     * @param eventClass    The class of the event to check if required.
+     * @return              If the specified event is required.
+     */
+    public boolean requiresEvent(Class<? extends Event> eventClass) {
+    	return requiredEvents.contains(eventClass);
+    }
+    
     /**
      * Gets the required events set.
      * 
@@ -95,15 +128,6 @@ public abstract class Dispatcher {
      */
     public Set<Class<? extends Event>> getRequiredEvents() {
         return requiredEvents;
-    }
-    
-    
-    public void addRequiredEvent(Class<? extends Event> eventClass) {
-    	requiredEvents.add(eventClass);
-    }
-    
-    public boolean requiresEvent(Class<? extends Event> eventClass) {
-    	return requiredEvents.contains(eventClass);
     }
     
     /**
@@ -115,6 +139,8 @@ public abstract class Dispatcher {
 
     /**
      * Dispatches all the events for this reactor.
+     * 
+     * @param executor  The executor service to dispatch events to.
      */
     public abstract void dispatchEvents(ExecutorService executor);
 }
