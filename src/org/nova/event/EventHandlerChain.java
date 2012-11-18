@@ -48,6 +48,15 @@ public final class EventHandlerChain<T extends Event> {
     }
     
     /**
+     * Removes an event handler from the event handler chain.
+     * 
+     * @param handler   The event handler to remove.
+     */
+    public void remove(EventHandler<T> handler) {
+        handlerChain.remove(handler);
+    }
+    
+    /**
      * Creates a new {@link EventHandlerChainContext}.
      * 
      * @param   event   The event to create the chain context for.
