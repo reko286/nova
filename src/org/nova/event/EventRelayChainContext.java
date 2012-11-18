@@ -70,7 +70,7 @@ public final class EventRelayChainContext<T extends Event> {
             return;
         }
         
-        if(isFinished()) {
+        if(!iterator.hasNext()) {
             sink.handle(event);
         }
     }
