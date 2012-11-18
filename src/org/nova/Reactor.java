@@ -13,16 +13,19 @@ import org.nova.event.EventHandlerChain;
 
 /**
  * Runelocus Development 
- * Created by Trey
+ * Created by Trey, Hadyn Richard
  */
 public abstract class Reactor {
 
-    protected Map<Class<? extends Event>, EventHandlerChain> handlerMap;
-    protected Set<Class<? extends Event>> requiredEvents;
-
-    public Set<Class<? extends Event>> getRequiredEvents() {
-        return requiredEvents;
-    }
+    /**
+     * The map for each of the event handler chains.
+     */
+    private Map<Class<? extends Event>, EventHandlerChain> handlerChains;
+    
+    /**
+     * The set for each of the required events for this reactor to function properly.
+     */
+    private Set<Class<? extends Event>> requiredEvents;
 
     /**
      * Checks if the reactor contains all the required event handler chains.
@@ -33,7 +36,7 @@ public abstract class Reactor {
         for (Class<? extends Event> eventClass : requiredEvents) {
             Class checkClass = eventClass;
             while(checkClass != null) {
-                if (!handlerMap.containsKey(checkClass)) {
+                if (!handlerChains.containsKey(checkClass)) {
                     return false;
                 }
                 checkClass = checkClass.getSuperclass();
@@ -51,13 +54,13 @@ public abstract class Reactor {
      *                      chain for the specified event.
      */
     public boolean registerHandler(Class<? extends Event> eventClass, EventHandler handler) {
-        if(!handlerMap.containsKey(eventClass)) {
+        if(!handlerChains.containsKey(eventClass)) {
             EventHandlerChain chain = new EventHandlerChain();
             chain.addToBack(handler);
-            handlerMap.put(eventClass, chain);
+            handlerChains.put(eventClass, chain);
             return false;
         } else {
-            EventHandlerChain chain = handlerMap.get(eventClass);
+            EventHandlerChain chain = handlerChains.get(eventClass);
             chain.addToBack(handler);
             return true;
         }
@@ -70,7 +73,7 @@ public abstract class Reactor {
      * @return              The unregistered event handler chain.
      */
     public EventHandlerChain unregisterChain(Class<? extends Event> eventClass) {
-        return handlerMap.remove(eventClass);
+        return handlerChains.remove(eventClass);
     }
 
     /**
@@ -80,7 +83,16 @@ public abstract class Reactor {
      * @return      The handler chain.
      */
     public EventHandlerChain getHandlerChainFor(Event event) {
-        return handlerMap.get(event.getClass());
+        return handlerChains.get(event.getClass());
+    }
+    
+    /**
+     * Gets the required events set.
+     * 
+     * @return  The required events.
+     */
+    public Set<Class<? extends Event>> getRequiredEvents() {
+        return requiredEvents;
     }
 
     /**
