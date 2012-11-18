@@ -15,7 +15,7 @@ import org.nova.event.EventHandlerChain;
  * Runelocus Development 
  * Created by Trey, Hadyn Richard
  */
-public abstract class Reactor {
+public abstract class Dispatcher {
 
     /**
      * The map for each of the event handler chains.
