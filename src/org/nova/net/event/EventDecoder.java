@@ -8,6 +8,7 @@
 package org.nova.net.event;
 
 import org.nova.event.Event;
+import org.nova.net.Decoder;
 import org.nova.net.Packet;
 
 /**
@@ -16,14 +17,6 @@ import org.nova.net.Packet;
  * 
  * The interface for all packet to event decoders.
  */
-public interface EventDecoder<T extends Event> {
-    
-    /**
-     * Decodes an event from a packet.
-     * 
-     * @param packet    The packet to decode the event from.
-     * @return          The decoded event.
-     */
-    public T decode(Packet packet);
+public interface EventDecoder<T extends Event> extends Decoder<Packet, T>{
 
 }

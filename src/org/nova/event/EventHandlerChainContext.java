@@ -21,12 +21,12 @@ public final class EventHandlerChainContext<T extends Event> {
     /**
      * The event to propagate down the event handler chain.
      */
-    private final Event event;
+    private final T event;
     
     /**
      * The event handler iterator.
      */
-    private final Iterator<EventHandler> iterator;
+    private final Iterator<EventHandler<T>> iterator;
     
     /**
      * Flag for if handler has been requested to stop.
@@ -39,7 +39,7 @@ public final class EventHandlerChainContext<T extends Event> {
      * @param event     The event to handle in this context.
      * @param iterator  The event handler iterator.
      */
-    public EventHandlerChainContext(T event, Iterator<EventHandler> iterator) {
+    public EventHandlerChainContext(T event, Iterator<EventHandler<T>> iterator) {
         this.event = event;
         this.iterator = iterator;
     }
@@ -71,7 +71,7 @@ public final class EventHandlerChainContext<T extends Event> {
     public void doNext() {
         checkState();
         
-        EventHandler handler = iterator.next();
+        EventHandler<T> handler = iterator.next();
         handler.handle(event, this);
     }
     
@@ -87,7 +87,7 @@ public final class EventHandlerChainContext<T extends Event> {
         checkState();
         
         while(iterator.hasNext() || !stopped) {
-            EventHandler handler = iterator.next();
+            EventHandler<T> handler = iterator.next();
             handler.handle(event, this);
         }
     }

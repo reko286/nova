@@ -19,6 +19,6 @@ public abstract class EventHandler<T extends Event> {
      * @param event     The event to handle.
      * @param context   The event handler chain context.
      */
-    public abstract void handle(T event, EventHandlerChainContext context);
+    public abstract void handle(T event, EventHandlerChainContext<T> context);
 
 }

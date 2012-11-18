@@ -7,6 +7,8 @@ package org.nova;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+
 import org.nova.event.Event;
 import org.nova.event.EventHandler;
 import org.nova.event.EventHandlerChain;
@@ -20,7 +22,7 @@ public abstract class Dispatcher {
     /**
      * The map for each of the event handler chains.
      */
-    private Map<Class<? extends Event>, EventHandlerChain> handlerChains;
+    private Map<Class<? extends Event>, EventHandlerChain<?>> handlerChains;
     
     /**
      * The set for each of the required events for this reactor to function properly.
@@ -34,7 +36,7 @@ public abstract class Dispatcher {
      */
     public boolean hasMetRequirements() {
         for (Class<? extends Event> eventClass : requiredEvents) {
-            Class checkClass = eventClass;
+            Class<?> checkClass = eventClass;
             while(checkClass != null) {
                 if (!handlerChains.containsKey(checkClass)) {
                     return false;
@@ -53,7 +55,7 @@ public abstract class Dispatcher {
      * @return              If the register map already contained an event handler
      *                      chain for the specified event.
      */
-    public boolean registerHandler(Class<? extends Event> eventClass, EventHandler handler) {
+    public boolean registerHandler(Class<? extends Event> eventClass, EventHandler<?> handler) {
         if(!handlerChains.containsKey(eventClass)) {
             EventHandlerChain chain = new EventHandlerChain();
             chain.addToBack(handler);
@@ -72,7 +74,7 @@ public abstract class Dispatcher {
      * @param eventClass    The class of the event to unregister the handlers for.
      * @return              The unregistered event handler chain.
      */
-    public EventHandlerChain unregisterChain(Class<? extends Event> eventClass) {
+    public EventHandlerChain<?> unregisterChain(Class<? extends Event> eventClass) {
         return handlerChains.remove(eventClass);
     }
 
@@ -94,7 +96,16 @@ public abstract class Dispatcher {
     public Set<Class<? extends Event>> getRequiredEvents() {
         return requiredEvents;
     }
-
+    
+    
+    public void addRequiredEvent(Class<? extends Event> eventClass) {
+    	requiredEvents.add(eventClass);
+    }
+    
+    public boolean requiresEvent(Class<? extends Event> eventClass) {
+    	return requiredEvents.contains(eventClass);
+    }
+    
     /**
      * Handles an event.
      * 
@@ -105,5 +116,5 @@ public abstract class Dispatcher {
     /**
      * Dispatches all the events for this reactor.
      */
-    public abstract void dispatchEvents();
+    public abstract void dispatchEvents(ExecutorService executor);
 }

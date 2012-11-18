@@ -8,6 +8,7 @@
 package org.nova.net.event;
 
 import org.nova.event.Event;
+import org.nova.net.Encoder;
 import org.nova.net.Packet;
 
 /**
@@ -16,14 +17,6 @@ import org.nova.net.Packet;
  * 
  * The base class for all event to packet encoders.
  */
-public interface EventEncoder<T extends Event> {
+public interface EventEncoder<T extends Event> extends Encoder<T, Packet> {
     
-    /**
-     * Encodes an event into a packet.
-     * 
-     * @param event The event to encode.
-     * @return      The encoded packet.
-     */
-    public Packet encode(T event);
-
 }

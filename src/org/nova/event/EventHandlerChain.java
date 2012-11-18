@@ -20,13 +20,13 @@ public final class EventHandlerChain<T extends Event> {
     /**
      * The double ended queue of event handlers that make up the chain.
      */
-    private Deque<EventHandler> handlerChain;
+    private Deque<EventHandler<T>> handlerChain;
     
     /**
      * Constructs a new {@link EventHandlerChain};
      */
     public EventHandlerChain() {
-        handlerChain = new LinkedList<>();
+        handlerChain = new LinkedList<EventHandler<T>>();
     }
     
     /**
@@ -63,6 +63,6 @@ public final class EventHandlerChain<T extends Event> {
      * @return          The created {@link EventHandlerChainContext}.
      */
     public EventHandlerChainContext<T> createNewEventHandlerChainContext(T event) {
-        return new EventHandlerChainContext<>(event, handlerChain.iterator());
+        return new EventHandlerChainContext<T>(event, handlerChain.iterator());
     }
 }

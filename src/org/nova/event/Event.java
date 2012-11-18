@@ -18,6 +18,11 @@ import java.util.EventObject;
 public abstract class Event extends EventObject {
     
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8135795128539020542L;
+
+	/**
      * Constructs a new {@link Event};
      * 
      * @param source    The source of the event.

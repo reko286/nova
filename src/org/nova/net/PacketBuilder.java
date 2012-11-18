@@ -7,6 +7,8 @@
 
 package org.nova.net;
 
+import java.nio.ByteBuffer;
+
 /**
  * Evelus Development
  * Created by Hadyn Richard
@@ -15,36 +17,60 @@ package org.nova.net;
  */
 public final class PacketBuilder {
     
-    /**
-     * The opcode for the packet.
-     */
-    private int opcode;
+    private PacketDescriptor descriptor;
+    private ByteBuffer payload;
     
-    /**
-     * The size for the packet.
-     */
-    private PacketSize size;
+    public PacketBuilder(int opcode) {
+    	this(opcode, PacketSize.STATIC);
+    }
+
+    public PacketBuilder(int opcode, PacketSize size) {
+    	this(new PacketDescriptor(opcode, size));
+    }
     
     /**
      * Constructs a new {@link PacketBuilder};
      * 
      * @param opcode    The packet opcode.
      */
-    public PacketBuilder(int opcode, PacketSize size) {
-        this.opcode = opcode;
-        this.size = size;
+    public PacketBuilder(PacketDescriptor descriptor) {
+    	this.descriptor = descriptor;
     }
     
-    /**
-     * Sets the opcode and size of the packet.
-     * 
-     * @param opcode    The opcode of the packet.
-     * @param size      The size of the packet.
-     */
-    public void setOpcodeAndSize(int opcode, PacketSize size) {
-        this.opcode = opcode;
-        this.size = size;
-    }
+	public PacketBuilder put(byte b) {
+		payload.put(b);
+		return this;
+	}
+	
+	public PacketBuilder putChar(char c) {
+		payload.putChar(c);
+		return this;
+	}
+	
+	public PacketBuilder putShort(short s) {
+		payload.putShort(s);
+		return this;
+	}
+	
+	public PacketBuilder putInt(int i) {
+		payload.putInt(i);
+		return this;
+	}
+	
+	public PacketBuilder putFloat(float f) {
+		payload.putFloat(f);
+		return this;
+	}
+	
+	public PacketBuilder putDouble(double d) {
+		payload.putDouble(d);
+		return this;
+	}
+	
+	public PacketBuilder putLong(long l) {
+		payload.putLong(l);
+		return this;
+	}
     
     /**
      * Converts the information provided by this builder to a packet.
@@ -52,7 +78,6 @@ public final class PacketBuilder {
      * @return  The created packet.
      */
     public Packet toPacket() {
-        PacketDescriptor descriptor = new PacketDescriptor(opcode, size);
-        return new Packet(descriptor);
+        return new Packet(descriptor, payload);
     }
 }
