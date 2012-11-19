@@ -20,11 +20,12 @@
  * THE SOFTWARE.
  */
 
-package org.nova;
+package org.nova.core;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.nova.ServerContext;
 
 /**
  * Runelocus Development
@@ -74,6 +75,19 @@ public final class ServiceManager {
      */
     public Service unregister(ServiceDescriptor descriptor) {
         return services.remove(descriptor);
+    }
+    
+    /**
+     * Sets the context for each of the services.
+     * 
+     * @param context   The context.
+     */
+    public void setContext(ServerContext context) {
+        Iterator<Service> iterator = services.values().iterator();
+        while(iterator.hasNext()) {
+            Service service = iterator.next();
+            service.setContext(context);
+        }
     }
     
     /**

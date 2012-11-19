@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package org.nova;
+package org.nova.core;
 
 /**
  * Runelocus Development

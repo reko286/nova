@@ -25,7 +25,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
-import org.nova.Dispatcher;
+import org.nova.core.Dispatcher;
 import org.nova.event.Event;
 
 public class Reactor extends Dispatcher {

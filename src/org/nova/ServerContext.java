@@ -22,6 +22,10 @@
 
 package org.nova;
 
+import org.nova.core.ServiceDescriptor;
+import org.nova.core.ServiceManager;
+import org.nova.core.Service;
+
 /**
  * Runelocus Development
  * Created by Hadyn Richard
@@ -40,6 +44,7 @@ public final class ServerContext {
      */
     public ServerContext(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
+        serviceManager.setContext(this);
     }
     
     /**

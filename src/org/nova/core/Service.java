@@ -19,9 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.nova;
+package org.nova.core;
 
 import java.util.concurrent.ExecutorService;
+import org.nova.ServerContext;
 
 /**
  * Evelus Development 
@@ -61,8 +62,7 @@ public abstract class Service {
      * @param executor      The executor service for this service.
      * @param dispatcher    The dispatcher for this service.
      */
-    public Service(ServerContext context, ExecutorService executor, Dispatcher dispatcher) {
-        this.context = context;
+    public Service(ExecutorService executor, Dispatcher dispatcher) {
         this.executor = executor;
         this.dispatcher = dispatcher;
         this.isRunning = false;
@@ -104,6 +104,15 @@ public abstract class Service {
      */
     public boolean hasStopped() {
         return hasStopped;
+    }
+    
+    /**
+     * Sets the context.
+     * 
+     * @param context   The context for this service.
+     */
+    public void setContext(ServerContext context) {
+        this.context = context;
     }
     
     /**
