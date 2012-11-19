@@ -20,14 +20,18 @@
  * THE SOFTWARE.
  */
 
-package org.nova.game.model;
+package org.nova.net.codec;
+
+import org.nova.event.Event;
+import org.nova.net.Packet;
+import org.nova.util.Decoder;
 
 /**
  * Evelus Development
  * Created by Hadyn Richard
  * 
- * The base class for all game characters.
+ * The interface for all packet to event decoders.
  */
-public abstract class Character {
+public interface EventDecoder<T extends Event> extends Decoder<Packet, T>{
 
 }

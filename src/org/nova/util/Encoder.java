@@ -21,9 +21,19 @@
  */
 
 
-package org.nova.net;
+package org.nova.util;
 
+/**
+ * Runelocus Development 
+ * Created by Trey
+ */
 public interface Encoder<T, V> {
 
-	public V encode(T t);
+    /**
+     * Encodes a value from an input.
+     * 
+     * @param t The input value.
+     * @return  The output value.
+     */
+    public V encode(T t);
 }

@@ -20,9 +20,35 @@
  * THE SOFTWARE.
  */
 
+package org.nova;
 
-package org.nova.net;
-
-public abstract class Codec<T, V> implements Encoder<T, V>, Decoder<V, T> {
-
+/**
+ * Runelocus Development
+ * Created by Hadyn Richard
+ */
+public final class ServerContext {
+    
+    /**
+     * The service manager for the server context.
+     */
+    private ServiceManager serviceManager;
+    
+    /**
+     * Constructs a new {@link ServerContext};
+     * 
+     * @param serviceManager    The service manager. 
+     */
+    public ServerContext(ServiceManager serviceManager) {
+        this.serviceManager = serviceManager;
+    }
+    
+    /**
+     * Gets a service from its descriptor.
+     * 
+     * @param descriptor    The service descriptor.
+     * @return              The server for the descriptor.
+     */
+    public Service getService(ServiceDescriptor descriptor) {
+        return serviceManager.get(descriptor);
+    }
 }

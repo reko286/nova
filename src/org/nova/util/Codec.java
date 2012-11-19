@@ -20,18 +20,14 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.event;
-
-import org.nova.event.Event;
-import org.nova.net.Decoder;
-import org.nova.net.Packet;
+package org.nova.util;
 
 /**
- * Evelus Development
- * Created by Hadyn Richard
+ * Runelocus Development 
+ * Created by Trey
  * 
- * The interface for all packet to event decoders.
+ * Bundles an encoder and decoder into one abstract implementation.
  */
-public interface EventDecoder<T extends Event> extends Decoder<Packet, T>{
+public abstract class Codec<T, V> implements Encoder<T, V>, Decoder<V, T> {
 
 }

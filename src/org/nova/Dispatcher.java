@@ -25,7 +25,6 @@ package org.nova;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-
 import org.nova.event.Event;
 import org.nova.event.EventHandler;
 import org.nova.event.EventHandlerChain;
@@ -106,7 +105,11 @@ public abstract class Dispatcher {
     }
     
         
-    
+    /**
+     * Adds a required event.
+     * 
+     * @param eventClass    The class of the event to require.
+     */
     public void addRequiredEvent(Class<? extends Event> eventClass) {
     	requiredEvents.add(eventClass);
     }

@@ -20,10 +20,8 @@
  * THE SOFTWARE.
  */
 
-
 package org.nova.event;
 
-import org.nova.event.Event;
 import java.util.Iterator;
 
 /**

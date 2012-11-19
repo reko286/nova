@@ -20,10 +20,19 @@
  * THE SOFTWARE.
  */
 
-
 package org.nova.net;
 
-public interface Decoder<T, V> {
+import java.nio.channels.SelectionKey;
 
-	public V decode(T t);
+/**
+ * Runelocus Development
+ * Created by Hadyn Richard
+ */
+public final class Client {
+    
+    /**
+     * Constructs a new {@link Client};
+     */
+    public Client(SelectionKey selectionKey) {}
+
 }

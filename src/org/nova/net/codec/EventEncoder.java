@@ -20,11 +20,11 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.event;
+package org.nova.net.codec;
 
 import org.nova.event.Event;
-import org.nova.net.Encoder;
 import org.nova.net.Packet;
+import org.nova.util.Encoder;
 
 /**
  * Evelus Development
