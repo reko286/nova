@@ -24,7 +24,6 @@
 package org.nova.net;
 
 /**
- * Evelus Development
  * Created by Hadyn Richard
  * 
  * Describes a packet.

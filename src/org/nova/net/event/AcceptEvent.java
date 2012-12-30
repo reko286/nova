@@ -20,40 +20,36 @@
  * THE SOFTWARE.
  */
 
-package org.nova;
+package org.nova.net.event;
 
-import org.nova.core.ServiceDescriptor;
-import org.nova.core.ServiceManager;
-import org.nova.core.Service;
+import org.nova.event.Event;
+
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 
 /**
- * Runelocus Development
  * Created by Hadyn Richard
  */
-public final class ServerContext {
-    
+public final class AcceptEvent extends Event {
+
     /**
-     * The service manager for the server context.
+     * The accepted socket channel.
      */
-    private ServiceManager serviceManager;
-    
+    private SocketChannel socketChannel;
+
     /**
-     * Constructs a new {@link ServerContext};
+     * The selector that the socket channel was accepted from.
+     */
+    private Selector selector;
+
+    /**
+     * Constructs a new {@link AcceptEvent};
      * 
-     * @param serviceManager    The service manager. 
+     * @param socketChannel The accepted socket channel.
+     * @param selector      The selector that the socket channel was accepted from.
      */
-    public ServerContext(ServiceManager serviceManager) {
-        this.serviceManager = serviceManager;
-        serviceManager.setContext(this);
-    }
-    
-    /**
-     * Gets a service from its descriptor.
-     * 
-     * @param descriptor    The service descriptor.
-     * @return              The server for the descriptor.
-     */
-    public Service getService(ServiceDescriptor descriptor) {
-        return serviceManager.get(descriptor);
+    public AcceptEvent(SocketChannel socketChannel, Selector selector) {
+        this.socketChannel = socketChannel;
+        this.selector = selector;
     }
 }

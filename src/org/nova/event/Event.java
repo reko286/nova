@@ -20,30 +20,15 @@
  * THE SOFTWARE.
  */
 
-
 package org.nova.event;
 
 import java.util.EventObject;
 
 /**
- * Evelus Development
  * Created by Hadyn Richard
  * 
  * The base class for all events.
  */
-public abstract class Event extends EventObject {
-    
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 8135795128539020542L;
+public abstract class Event {
 
-	/**
-     * Constructs a new {@link Event};
-     * 
-     * @param source    The source of the event.
-     */
-    public Event(Object source) {
-        super(source);
-    }
 }

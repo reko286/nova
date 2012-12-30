@@ -25,7 +25,6 @@ package org.nova.net;
 import java.nio.channels.SelectionKey;
 
 /**
- * Runelocus Development
  * Created by Hadyn Richard
  */
 public final class Client {

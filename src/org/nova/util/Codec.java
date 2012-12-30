@@ -23,7 +23,6 @@
 package org.nova.util;
 
 /**
- * Runelocus Development 
  * Created by Trey
  * 
  * Bundles an encoder and decoder into one abstract implementation.

@@ -20,65 +20,36 @@
  * THE SOFTWARE.
  */
 
-package org.nova.core;
+package org.nova.net.event;
+
+import org.nova.event.Event;
+
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 
 /**
- * Runelocus Development
  * Created by Hadyn Richard
  */
-public final class ServiceDescriptor {
-    
-    /**
-     * The name of the service.
-     */
-    private final String name;
-    
-    /**
-     * The id of the service.
-     */
-    private final int id;
-    
-    /**
-     * Constructs a new {@link ServerDescriptor};
-     * 
-     * @param name  The name of the service. 
-     * @param id    The id of the service.
-     */
-    public ServiceDescriptor(String name, int id) {
-        this.name = name;
-        this.id = id;
-    }
-    
-    /**
-     * Gets the name of the service.
-     * 
-     * @return  The name.
-     */
-    public String getName() {
-        return name;
-    }
-    
-    /**
-     * Gets the id of the service.
-     * 
-     * @return  The id.
-     */
-    public int getId() {
-        return id;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == null || !(obj instanceof ServiceDescriptor)) {
-            return false;
-        }
-        
-        ServiceDescriptor descriptor = (ServiceDescriptor) obj;
-        return descriptor.id == id && descriptor.name.equals(name);
-    }
+public final class ReadEvent extends Event {
 
-    @Override
-    public int hashCode() {
-        return name.hashCode() * 31 ^ id;
+    /**
+     * The socket channel to read from.
+     */
+    private SocketChannel socketChannel;
+
+    /**
+     * The selector which the read interest was indicated from.
+     */
+    private Selector selector;
+
+    /**
+     * Constructs a new {@link ReadEvent};
+     *
+     * @param socketChannel The socket channel to read from.
+     * @param selector      The selector which the read interest was indicated from.
+     */
+    public ReadEvent(SocketChannel socketChannel, Selector selector) {
+        this.socketChannel = socketChannel;
+        this.selector = selector;
     }
 }

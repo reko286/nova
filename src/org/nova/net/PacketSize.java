@@ -23,7 +23,6 @@
 package org.nova.net;
 
 /**
- * Evelus Development
  * Created by Hadyn Richard
  * 
  * Each of the enumerations for a packet's possible size.

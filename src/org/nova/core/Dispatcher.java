@@ -22,6 +22,7 @@
 
 package org.nova.core;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -30,8 +31,9 @@ import org.nova.event.EventHandler;
 import org.nova.event.EventHandlerChain;
 
 /**
- * Runelocus Development 
  * Created by Trey, Hadyn Richard
+ *
+ * TODO: Add in the required event chains set!
  */
 public abstract class Dispatcher {
 
@@ -39,30 +41,14 @@ public abstract class Dispatcher {
      * The map for each of the event handler chains.
      */
     private Map<Class<? extends Event>, EventHandlerChain<?>> handlerChains;
-    
-    /**
-     * The set for each of the required events for this reactor to function properly.
-     */
-    private Set<Class<? extends Event>> requiredEvents;
 
     /**
-     * Checks if the reactor contains all the required event handler chains.
-     * 
-     * @return  If the reactor contains each of the required event handler chains.
+     * Constructs a new {@link Dispatcher};
      */
-    public boolean hasMetRequirements() {
-        for (Class<? extends Event> eventClass : requiredEvents) {
-            Class<?> checkClass = eventClass;
-            while(checkClass != null) {
-                if (!handlerChains.containsKey(checkClass)) {
-                    return false;
-                }
-                checkClass = checkClass.getSuperclass();
-            }
-        }
-        return true;
+    public Dispatcher() {
+        handlerChains = new HashMap<Class<? extends Event>, EventHandlerChain<?>>();
     }
-
+    
     /**
      * Registers an event handler to this reactor.
      * 
@@ -102,35 +88,6 @@ public abstract class Dispatcher {
      */
     public EventHandlerChain getHandlerChainFor(Event event) {
         return handlerChains.get(event.getClass());
-    }
-    
-        
-    /**
-     * Adds a required event.
-     * 
-     * @param eventClass    The class of the event to require.
-     */
-    public void addRequiredEvent(Class<? extends Event> eventClass) {
-    	requiredEvents.add(eventClass);
-    }
-    
-    /**
-     * Gets if the dispatcher requires an event.
-     * 
-     * @param eventClass    The class of the event to check if required.
-     * @return              If the specified event is required.
-     */
-    public boolean requiresEvent(Class<? extends Event> eventClass) {
-    	return requiredEvents.contains(eventClass);
-    }
-    
-    /**
-     * Gets the required events set.
-     * 
-     * @return  The required events.
-     */
-    public Set<Class<? extends Event>> getRequiredEvents() {
-        return requiredEvents;
     }
     
     /**

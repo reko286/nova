@@ -34,12 +34,17 @@ public final class Packet {
      * The descriptor for this packet.
      */
     private final PacketDescriptor descriptor;
+
+    /**
+     * The payload for this packet.
+     */
     private ByteBuffer payload;
     
     /**
      * Constructs a new {@link Packet};
      * 
      * @param descriptor    The descriptor for the packet.
+     * @param payload       The payload for the packet.
      */
     public Packet(PacketDescriptor descriptor, ByteBuffer payload) {
         this.descriptor = descriptor;
@@ -54,7 +59,12 @@ public final class Packet {
     public PacketDescriptor getDescriptor() {
         return descriptor;
     }
-    
+
+    /**
+     * Gets the payload for this packet.
+     *
+     * @return  The payload.
+     */
     public ByteBuffer getPayload() {
     	return payload;
     }

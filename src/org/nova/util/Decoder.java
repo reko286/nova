@@ -22,7 +22,6 @@
 package org.nova.util;
 
 /**
- * Runelocus Development 
  * Created by Trey
  */
 public interface Decoder<T, V> {

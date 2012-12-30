@@ -23,18 +23,30 @@ package org.nova.net;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import org.nova.core.Dispatcher;
 import org.nova.event.Event;
+import org.nova.net.event.AcceptEvent;
+import org.nova.net.event.ReadEvent;
+import org.nova.net.event.WriteEvent;
 
 public class Reactor extends Dispatcher {
 
+    /**
+     * The selector to use for the reactor.
+     */
     private Selector selector;
 
+    /**
+     * Constructs a new {@link Reactor};
+     * 
+     * @param selector  The selector for the reactor.
+     */
     public Reactor(Selector selector) {
         this.selector = selector;
-        //add required accept/read/write events
     }
 
     @Override
@@ -52,11 +64,33 @@ public class Reactor extends Dispatcher {
                 it.remove();
                 if (key.isValid()) {
                     if (key.isAcceptable()) {
-                        //create AcceptEvent, pass to handler
-                    } else if (key.isWritable()) {
-                        //create WriteEvent, pass to handler
+
+                        /* Accept the socket channel */
+                        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+                        SocketChannel socketChannel = serverChannel.accept();
+
+                        /* Check if the accepted socket channel is valid */
+                        if(socketChannel == null) {
+                            continue;
+                        }
+
+                        /* Create the accept event and propagate it down the event handler chain */
+                        Event event = new AcceptEvent(socketChannel, selector);
+                        getHandlerChainFor(event).createNewEventHandlerChainContext(event).doAll();
                     } else if (key.isReadable()) {
-                        //create ReadEvent, pass to handler
+                        
+                        SocketChannel socketChannel = (SocketChannel) key.channel();
+
+                        /* Create the read event and propagate it down the event handler chain */
+                        Event event = new ReadEvent(socketChannel, selector);
+                        getHandlerChainFor(event).createNewEventHandlerChainContext(event).doAll();
+                    } else if (key.isWritable()) {
+
+                        SocketChannel socketChannel = (SocketChannel) key.channel();
+
+                        /* Create the write event and propagate it down the event handler chain */
+                        Event event = new WriteEvent(socketChannel, selector);
+                        getHandlerChainFor(event).createNewEventHandlerChainContext(event).doAll();
                     }
                 }
             }

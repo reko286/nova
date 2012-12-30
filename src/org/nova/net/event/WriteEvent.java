@@ -20,18 +20,36 @@
  * THE SOFTWARE.
  */
 
-package org.nova;
+package org.nova.net.event;
+
+import org.nova.event.Event;
+
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 
 /**
  * Created by Hadyn Richard
  */
-public final class Server {
-    
-    /**
-     * The command line arguments.
-     * 
-     * @param args  The command line arguments.
-     */
-    public static void main(String[] args) {}
+public final class WriteEvent extends Event {
 
+    /**
+     * The socket channel to write to.
+     */
+    private SocketChannel socketChannel;
+
+    /**
+     * The selector which the read interest was indicated from.
+     */
+    private Selector selector;
+
+    /**
+     * Constructs a new {@link WriteEvent};
+     *
+     * @param socketChannel The socket channel to write to.
+     * @param selector      The selector which the read interest was indicated from.
+     */
+    public WriteEvent(SocketChannel socketChannel, Selector selector) {
+        this.socketChannel = socketChannel;
+        this.selector = selector;
+    }
 }

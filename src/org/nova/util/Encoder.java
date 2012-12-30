@@ -24,7 +24,6 @@
 package org.nova.util;
 
 /**
- * Runelocus Development 
  * Created by Trey
  */
 public interface Encoder<T, V> {

@@ -22,18 +22,11 @@
 package org.nova.core;
 
 import java.util.concurrent.ExecutorService;
-import org.nova.ServerContext;
 
 /**
- * Evelus Development 
  * Created by Hadyn Richard, Trey
  */
 public abstract class Service {
-    
-    /**
-     * The server context for this service.
-     */
-    private ServerContext context;
 
     /**
      * The executor for this service.
@@ -49,36 +42,24 @@ public abstract class Service {
      * The flag for if this service is currently running.
      */
     private boolean isRunning;
-    
-    /**
-     * The flag for if this service has stopped running.
-     */
-    private boolean hasStopped;
 
     /**
      * Constructs a new {@link Service};
-     * 
-     * @param context       The server context for this service.
+     *
      * @param executor      The executor service for this service.
      * @param dispatcher    The dispatcher for this service.
      */
     public Service(ExecutorService executor, Dispatcher dispatcher) {
         this.executor = executor;
         this.dispatcher = dispatcher;
-        this.isRunning = false;
-        this.hasStopped = true;
+        isRunning = true;
     }
 
     /**
-     * Starts this service.
+     * Pulses this service.
      */
-    public void start() {
-        if (dispatcher.hasMetRequirements()) {
-            while (isRunning) {
-                dispatcher.dispatchEvents(executor);
-            }
-        }
-        hasStopped = true;
+    public void pulse() {
+        dispatcher.dispatchEvents(executor);
     }
 
     /**
@@ -95,32 +76,5 @@ public abstract class Service {
      */
     public boolean isRunning() {
         return isRunning;
-    }
-
-    /**
-     * Gets if the service has stopped.
-     * 
-     * @return  If the service has stopped.
-     */
-    public boolean hasStopped() {
-        return hasStopped;
-    }
-    
-    /**
-     * Sets the context.
-     * 
-     * @param context   The context for this service.
-     */
-    public void setContext(ServerContext context) {
-        this.context = context;
-    }
-    
-    /**
-     * Gets the server context.
-     * 
-     * @return  The context.
-     */
-    public ServerContext getContext() {
-        return context;
     }
 }

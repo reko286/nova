@@ -25,7 +25,6 @@ package org.nova.core;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import org.nova.ServerContext;
 
 /**
  * Runelocus Development
@@ -36,69 +35,44 @@ public final class ServiceManager {
     /**
      * The services registered to this service manager.
      */
-    private Map<ServiceDescriptor, Service> services;
+    private Map<String, Service> services;
     
     /**
      * Constructs a new {@link ServiceManager};
      */
     public ServiceManager() {
-        services = new HashMap<ServiceDescriptor, Service>();
+        services = new HashMap<String, Service>();
     }
     
     /**
      * Registers a service to this service manager.
      * 
-     * @param descriptor    The descriptor of the service.
+     * @param name          The name of the service.
      * @param service       The service to register.
      * @return              The previously registered service for the specified
      *                      descriptor if there was one.
      */
-    public Service register(ServiceDescriptor descriptor, Service service) {
-        return services.put(descriptor, service);
+    public Service register(String name, Service service) {
+        return services.put(name, service);
     }
-    
-    /**
-     * Gets a service for a specific service descriptor.
-     * 
-     * @param descriptor    The descriptor of the service.
-     * @return              The service.
-     */
-    public Service get(ServiceDescriptor descriptor) {
-        return services.get(descriptor);
-    }
-    
+
     /**
      * Unregisters a service from this service manager.
-     * 
-     * @param descriptor    The descriptor of the service to unregister.
-     * @return              The unregistered service for the descriptor.
+     *
+     * @param name  The name of the service to unregister.
+     * @return      The unregistered service for the descriptor.
      */
-    public Service unregister(ServiceDescriptor descriptor) {
-        return services.remove(descriptor);
+    public Service unregister(String name) {
+        return services.remove(name);
     }
     
     /**
-     * Sets the context for each of the services.
+     * Gets a service from its registered name.
      * 
-     * @param context   The context.
+     * @param name      The name of the service.
+     * @return          The service.
      */
-    public void setContext(ServerContext context) {
-        Iterator<Service> iterator = services.values().iterator();
-        while(iterator.hasNext()) {
-            Service service = iterator.next();
-            service.setContext(context);
-        }
-    }
-    
-    /**
-     * Stops and unregisters each of the services.
-     */
-    public void stopAndUnregisterAll() {
-        Iterator<Service> iterator = services.values().iterator();
-        while(iterator.hasNext()) {
-            Service service = iterator.next();
-            service.stop();
-        }
-        services.clear();
+    public Service get(String name) {
+        return services.get(name);
     }
 }

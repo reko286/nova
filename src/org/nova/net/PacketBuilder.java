@@ -22,9 +22,10 @@
 package org.nova.net;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
- * Evelus Development Created by Hadyn Richard
+ * Created by Hadyn Richard
  *
  * Used to help build and create packets.
  */
@@ -41,8 +42,8 @@ public final class PacketBuilder {
     private ByteBuffer payload;
 
     /**
-     * Constructs a new {@link PacketBuilder}; The default for the packet size
-     * is STATIC.
+     * Constructs a new {@link PacketBuilder};
+     * The default for the packet size is STATIC.
      *
      * @param opcode The opcode of the packet.
      */
@@ -63,44 +64,68 @@ public final class PacketBuilder {
     /**
      * Constructs a new {@link PacketBuilder};
      *
-     * @param opcode The packet opcode.
+     * @param descriptor    The packet descriptor.
      */
     public PacketBuilder(PacketDescriptor descriptor) {
         this.descriptor = descriptor;
     }
 
+    /**
+     * Sets the order of the buffer.
+     *
+     * @param order The byte order.
+     * @return      This instance of the packet builder, for chaining.                     
+     */
+    public PacketBuilder setOrder(ByteOrder order) {
+        payload.order(order);
+        return this;
+    }
+
+    /**
+     * Puts a byte into the payload of the packet. Resets the byte order to BIG_ENDIAN as well.
+     *
+     * @param b The byte value to put into the payload.
+     * @return  This instance of the packet builder, for chaining.
+     */
     public PacketBuilder put(byte b) {
         payload.put(b);
+        payload.order(ByteOrder.BIG_ENDIAN);
         return this;
     }
 
-    public PacketBuilder putChar(char c) {
-        payload.putChar(c);
-        return this;
-    }
-
+    /**
+     * Puts a short into the payload of the packet. Resets the byte order to BIG_ENDIAN as well.
+     *
+     * @param s The short value to put into the payload.
+     * @return  This instance of the packet builder, for chaining.
+     */
     public PacketBuilder putShort(short s) {
         payload.putShort(s);
+        payload.order(ByteOrder.BIG_ENDIAN);
         return this;
     }
 
+    /**
+     * Puts a byte into the payload of the packet. Resets the byte order to BIG_ENDIAN as well.
+     *
+     * @param i The integer value to put into the payload.
+     * @return  This instance of the packet builder, for chaining.
+     */
     public PacketBuilder putInt(int i) {
         payload.putInt(i);
+        payload.order(ByteOrder.BIG_ENDIAN);
         return this;
     }
 
-    public PacketBuilder putFloat(float f) {
-        payload.putFloat(f);
-        return this;
-    }
-
-    public PacketBuilder putDouble(double d) {
-        payload.putDouble(d);
-        return this;
-    }
-
+    /**
+     * Puts a long into the payload of the packet. Resets the byte order to BIG_ENDIAN as well.
+     *
+     * @param l The long value to put into the payload.
+     * @return  This instance of the packet builder, for chaining.
+     */
     public PacketBuilder putLong(long l) {
         payload.putLong(l);
+        payload.order(ByteOrder.BIG_ENDIAN);
         return this;
     }
 
