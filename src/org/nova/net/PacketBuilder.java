@@ -21,8 +21,11 @@
  */
 package org.nova.net;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import org.nova.net.packet.NumericBlock;
+import org.nova.net.packet.NumericBlock.NumericType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Hadyn Richard
@@ -37,9 +40,9 @@ public final class PacketBuilder {
     private PacketDescriptor descriptor;
     
     /**
-     * The payload buffer.
+     * The packet blocks for the packet we are building.
      */
-    private ByteBuffer payload;
+    private Map<String, PacketBlock> blocks;
 
     /**
      * Constructs a new {@link PacketBuilder};
@@ -68,64 +71,59 @@ public final class PacketBuilder {
      */
     public PacketBuilder(PacketDescriptor descriptor) {
         this.descriptor = descriptor;
+        
+        blocks = new HashMap<String, PacketBlock>();
     }
 
     /**
-     * Sets the order of the buffer.
+     * Puts a numeric byte block into the packet.
      *
-     * @param order The byte order.
-     * @return      This instance of the packet builder, for chaining.                     
+     * @param name  The name of the block to put.
+     * @param b     The byte value to put into the blocks.
+     * @return      This instance of the packet builder, for chaining.
      */
-    public PacketBuilder setOrder(ByteOrder order) {
-        payload.order(order);
+    public PacketBuilder putInt8(String name, byte b) {
+        NumericBlock block = new NumericBlock(b, NumericType.BYTE);
+        blocks.put(name, block);
         return this;
     }
 
     /**
-     * Puts a byte into the payload of the packet. Resets the byte order to BIG_ENDIAN as well.
+     * Puts a numeric short block into the packet.
      *
-     * @param b The byte value to put into the payload.
-     * @return  This instance of the packet builder, for chaining.
+     * @param name  The name of the block to put.
+     * @param s     The short value to put into the blocks.
+     * @return      This instance of the packet builder, for chaining.
      */
-    public PacketBuilder put(byte b) {
-        payload.put(b);
-        payload.order(ByteOrder.BIG_ENDIAN);
+    public PacketBuilder putInt16(String name, short s) {
+        NumericBlock block = new NumericBlock(s, NumericType.SHORT);
+        blocks.put(name, block);
         return this;
     }
 
     /**
-     * Puts a short into the payload of the packet. Resets the byte order to BIG_ENDIAN as well.
+     * Puts a numeric integer block into the packet.
      *
-     * @param s The short value to put into the payload.
-     * @return  This instance of the packet builder, for chaining.
+     * @param name  The name of the block to put.
+     * @param i     The integer value to put into the blocks.
+     * @return      This instance of the packet builder, for chaining.
      */
-    public PacketBuilder putShort(short s) {
-        payload.putShort(s);
-        payload.order(ByteOrder.BIG_ENDIAN);
+    public PacketBuilder putInt32(String name, int i) {
+        NumericBlock block = new NumericBlock(i, NumericType.INTEGER);
+        blocks.put(name, block);
         return this;
     }
 
     /**
-     * Puts a byte into the payload of the packet. Resets the byte order to BIG_ENDIAN as well.
+     * Puts a numeric long block into the packet.
      *
-     * @param i The integer value to put into the payload.
-     * @return  This instance of the packet builder, for chaining.
+     * @param name  The name of the block to put.
+     * @param l     The long value to put into the blocks.
+     * @return      This instance of the packet builder, for chaining.
      */
-    public PacketBuilder putInt(int i) {
-        payload.putInt(i);
-        payload.order(ByteOrder.BIG_ENDIAN);
-        return this;
-    }
-
-    /**
-     * Puts a long into the payload of the packet. Resets the byte order to BIG_ENDIAN as well.
-     *
-     * @param l The long value to put into the payload.
-     * @return  This instance of the packet builder, for chaining.
-     */
-    public PacketBuilder putLong(long l) {
-        payload.putLong(l);
-        payload.order(ByteOrder.BIG_ENDIAN);
+    public PacketBuilder putInt64(String name, long l) {
+        NumericBlock block = new NumericBlock(l, NumericType.LONG);
+        blocks.put(name, block);
         return this;
     }
 
@@ -135,6 +133,6 @@ public final class PacketBuilder {
      * @return The created packet.
      */
     public Packet toPacket() {
-        return new Packet(descriptor, payload);
+        return new Packet(descriptor, blocks);
     }
 }

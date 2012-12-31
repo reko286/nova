@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  */
 
-
 package org.nova.util;
 
 /**

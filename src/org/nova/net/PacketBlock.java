@@ -20,18 +20,23 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.codec;
+package org.nova.net;
 
-import org.nova.event.Event;
-import org.nova.net.Packet;
 import org.nova.util.Encoder;
 
+import java.nio.ByteBuffer;
+
 /**
- * Evelus Development
  * Created by Hadyn Richard
- * 
- * The base class for all event to packet encoders.
+ *
+ * Represents a variable in the packet.
  */
-public interface EventEncoder<T extends Event> extends Encoder<T, Packet> {
-    
+public abstract class PacketBlock {
+
+    /**
+     * Encodes the block to a byte buffer.
+     *
+     * @param buffer        The buffer to encode the block to.
+     */
+    public abstract void encode(ByteBuffer buffer);
 }

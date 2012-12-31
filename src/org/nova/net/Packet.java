@@ -22,10 +22,9 @@
 
 package org.nova.net;
 
-import java.nio.ByteBuffer;
+import java.util.Map;
 
 /**
- * Evelus Development
  * Created by Hadyn Richard
  */
 public final class Packet {    
@@ -36,19 +35,19 @@ public final class Packet {
     private final PacketDescriptor descriptor;
 
     /**
-     * The payload for this packet.
+     * The packet blocks for this packet.
      */
-    private ByteBuffer payload;
+    private Map<String, PacketBlock> packetBlocks;
     
     /**
      * Constructs a new {@link Packet};
      * 
      * @param descriptor    The descriptor for the packet.
-     * @param payload       The payload for the packet.
+     * @param packetBlocks  The packet blocks for the packet.
      */
-    public Packet(PacketDescriptor descriptor, ByteBuffer payload) {
+    public Packet(PacketDescriptor descriptor, Map<String, PacketBlock> packetBlocks) {
         this.descriptor = descriptor;
-        this.payload = payload;
+        this.packetBlocks = packetBlocks;
     }
     
     /**
@@ -61,11 +60,11 @@ public final class Packet {
     }
 
     /**
-     * Gets the payload for this packet.
+     * Gets the blocks for this packet.
      *
-     * @return  The payload.
+     * @return  The packet blocks.
      */
-    public ByteBuffer getPayload() {
-    	return payload;
+    public Map<String, PacketBlock> getPacketBlocks() {
+    	return packetBlocks;
     }
 }
