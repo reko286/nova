@@ -22,6 +22,7 @@
 
 package org.nova.net;
 
+import org.nova.net.packet.Transformer;
 import org.nova.util.Encoder;
 
 import java.nio.ByteBuffer;
@@ -30,13 +31,74 @@ import java.nio.ByteBuffer;
  * Created by Hadyn Richard
  *
  * Represents a variable in the packet.
+ *
+ * Notes:
+ *
+ *          Check for the compatibility of a transformer?
+ *          Move value object lower and set to protected access or use getter?
+ *              Subsequently wouldn't have to check for compatibility past this point because of generics.
  */
-public abstract class PacketBlock {
+public abstract class PacketBlock<T> {
+
+    /**
+     * The value of the packet block.
+     */
+    protected T value;
+
+    /**
+     * Constructs a new {@link PacketBlock};
+     * 
+     * @param value The value of the block.
+     */
+    protected PacketBlock(T value) {
+        this.value = value;
+    }
 
     /**
      * Encodes the block to a byte buffer.
      *
-     * @param buffer        The buffer to encode the block to.
+     * @param buffer    The buffer to encode the block to.
      */
     public abstract void encode(ByteBuffer buffer);
+
+    /**
+     * Decodes the block from a byte buffer.
+     *
+     * @param buffer    The buffer to decode the block from.
+     */
+    public abstract void decode(ByteBuffer buffer);
+
+    /**
+     * Gets the length of the block.
+     *
+     * @return  The length.
+     */
+    public abstract int getLength();
+
+    /**
+     * Transforms the internal value of the block by encoding the value.
+     *
+     * @param transformer The transformer to use to encode the value of the block.
+     */
+    public final void encodeValue(Transformer<T> transformer) {
+        value = transformer.encode(value);
+    }
+
+    /**
+     * Transforms the internal value of the block by decoding the value.
+     *
+     * @param transformer   The transformer to use to decode the value of the black.
+     */
+    public final void decodeValue(Transformer<T> transformer) {
+        value = transformer.decode(value);
+    }
+
+    /**
+     * Gets the value of the block.
+     *
+     * @return  The value.
+     */
+    public final T getValue() {
+        return value;
+    }
 }

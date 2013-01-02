@@ -60,11 +60,22 @@ public final class Packet {
     }
 
     /**
-     * Gets the blocks for this packet.
+     * Gets if a packet contains a specific block.
      *
-     * @return  The packet blocks.
+     * @param name  The name of the block to check for.
+     * @return      If this packet contains a specific block.
      */
-    public Map<String, PacketBlock> getPacketBlocks() {
-    	return packetBlocks;
+    public boolean containsBlock(String name) {
+        return packetBlocks.containsKey(name);
+    }
+
+    /**
+     * Gets a block for this packet.
+     *
+     * @param name  The name of the block.
+     * @return      The block for the packet.
+     */
+    public PacketBlock getPacketBlock(String name) {
+        return packetBlocks.get(name);
     }
 }

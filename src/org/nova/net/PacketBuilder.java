@@ -22,7 +22,7 @@
 package org.nova.net;
 
 import org.nova.net.packet.NumericBlock;
-import org.nova.net.packet.NumericBlock.NumericType;
+import org.nova.net.packet.NumericType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +83,7 @@ public final class PacketBuilder {
      * @return      This instance of the packet builder, for chaining.
      */
     public PacketBuilder putInt8(String name, byte b) {
-        NumericBlock block = new NumericBlock(b, NumericType.BYTE);
+        NumericBlock block = new NumericBlock(b, NumericType.INT8);
         blocks.put(name, block);
         return this;
     }
@@ -96,7 +96,7 @@ public final class PacketBuilder {
      * @return      This instance of the packet builder, for chaining.
      */
     public PacketBuilder putInt16(String name, short s) {
-        NumericBlock block = new NumericBlock(s, NumericType.SHORT);
+        NumericBlock block = new NumericBlock(s, NumericType.INT16);
         blocks.put(name, block);
         return this;
     }
@@ -109,7 +109,7 @@ public final class PacketBuilder {
      * @return      This instance of the packet builder, for chaining.
      */
     public PacketBuilder putInt32(String name, int i) {
-        NumericBlock block = new NumericBlock(i, NumericType.INTEGER);
+        NumericBlock block = new NumericBlock(i, NumericType.INT32);
         blocks.put(name, block);
         return this;
     }
@@ -122,7 +122,7 @@ public final class PacketBuilder {
      * @return      This instance of the packet builder, for chaining.
      */
     public PacketBuilder putInt64(String name, long l) {
-        NumericBlock block = new NumericBlock(l, NumericType.LONG);
+        NumericBlock block = new NumericBlock(l, NumericType.INT64);
         blocks.put(name, block);
         return this;
     }

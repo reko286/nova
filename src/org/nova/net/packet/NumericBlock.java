@@ -29,38 +29,7 @@ import java.nio.ByteBuffer;
 /**
  * Created by Hadyn Richard
  */
-public final class NumericBlock extends PacketBlock {
-
-    /**
-     * Enumeration for each of the numeric types.
-     */
-    public enum NumericType {
-
-        /*
-         * Representation for a byte value.
-         */
-        BYTE,
-
-        /**
-         * Representation for a short value.
-         */
-        SHORT,
-
-        /**
-         * Representation for an integer value.
-         */
-        INTEGER,
-
-        /**
-         * Representation for a long value.
-         */
-        LONG
-    }
-
-    /**
-     * The value of this numeric block.
-     */
-    private Number value;
+public final class NumericBlock extends PacketBlock<Number> {
 
     /**
      * The type of variable to encode and decode this block as.
@@ -74,7 +43,8 @@ public final class NumericBlock extends PacketBlock {
      * @param type  The type of the numeric block.
      */
     public NumericBlock(Number value, NumericType type) {
-        this.value = value;
+        super(value);
+
         this.type = type;
     }
 
@@ -84,21 +54,50 @@ public final class NumericBlock extends PacketBlock {
         /* Put the value into the buffer */
         switch(type) {
 
-            case BYTE:
+            case INT8:
                 buffer.put(value.byteValue());
                 break;
 
-            case SHORT:
+            case INT16:
                 buffer.putShort(value.shortValue());
                 break;
 
-            case INTEGER:
+            case INT32:
                 buffer.putInt(value.intValue());
                 break;
 
-            case LONG:
+            case INT64:
                 buffer.putLong(value.longValue());
                 break;
         }
+    }
+
+    @Override
+    public void decode(ByteBuffer buffer) {
+
+        /* Read the value from the buffer */
+        switch(type) {
+
+            case INT8:
+                value = buffer.get();
+                break;
+
+            case INT16:
+                value = buffer.getShort();
+                break;
+
+            case INT32:
+                value = buffer.getInt();
+                break;
+
+            case INT64:
+                value = buffer.getLong();
+                break;
+        }
+    }
+
+    @Override
+    public int getLength() {
+        return NumericType.getByteLength(type);
     }
 }
