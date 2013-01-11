@@ -30,26 +30,54 @@ import java.nio.channels.SocketChannel;
 /**
  * Created by Hadyn Richard
  */
-public final class AcceptEvent extends Event {
+public final class SocketChannelEvent extends Event {
 
     /**
-     * The accepted socket channel.
+     * The enumeration for different interests that can be indicated from a socket channel.
+     */
+    public enum SocketInterest {
+
+        /**
+         * The accept interest for socket channel.
+         */
+        ACCEPT,
+
+        /**
+         * The read interest for a socket channel.
+         */
+        READ,
+
+        /**
+         * The write interest for a socket channel.
+         */
+        WRITE
+    }
+
+    /**
+     * The socket channel to read from.
      */
     private SocketChannel socketChannel;
 
     /**
-     * The selector that the socket channel was accepted from.
+     * The selector which the read interest was indicated from.
      */
     private Selector selector;
 
     /**
-     * Constructs a new {@link AcceptEvent};
-     * 
-     * @param socketChannel The accepted socket channel.
-     * @param selector      The selector that the socket channel was accepted from.
+     * The interest for the socket.
      */
-    public AcceptEvent(SocketChannel socketChannel, Selector selector) {
+    private SocketInterest interest;
+
+    /**
+     * Constructs a new {@link SocketChannelEvent};
+     *
+     * @param socketChannel The socket channel that triggered the event.
+     * @param selector      The selector which the interest was indicated from.
+     * @param interest      The interest of the socket.
+     */
+    public SocketChannelEvent(SocketChannel socketChannel, Selector selector, SocketInterest interest) {
         this.socketChannel = socketChannel;
         this.selector = selector;
+        this.interest = interest;
     }
 }

@@ -50,6 +50,14 @@ public final class StringBlock extends PacketBlock<String> {
 
     /**
      * Constructs a new {@link StringBlock};
+     * The default value of this block is an empty string.
+     */
+    public StringBlock() {
+        this("");
+    }
+
+    /**
+     * Constructs a new {@link StringBlock};
      * 
      * @param value The value of the string block.
      */

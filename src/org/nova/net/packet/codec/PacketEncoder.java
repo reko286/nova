@@ -20,19 +20,15 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.codec;
+package org.nova.net.packet.codec;
 
+import org.nova.net.ISAACCipher;
 import org.nova.net.Packet;
 import org.nova.net.PacketBlock;
 import org.nova.net.PacketSize;
-import org.nova.net.packet.Transformer;
 import org.nova.util.Encoder;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Hadyn Richard
@@ -40,53 +36,23 @@ import java.util.Map;
  * Notes:
  *
  *          Blocks are encoded in order by which they were entered into the encoder.
- *          TODO: Differentiate stateful and stateless packet encoder.
  */
-public final class PacketEncoder implements Encoder<Packet, ByteBuffer> {
-
-    /**
-     * The map of transformers to use with specified blocks.
-     */
-    private Map<String, Transformer> transformers;
-
-    /**
-     * The blocks to use to encode the packet with.
-     */
-    private List<String> blocks;
+public final class PacketEncoder extends PacketCodec implements Encoder<PacketEncoderState, ByteBuffer> {
 
     /**
      * Construct a new {@link PacketEncoder};
      */
-    public PacketEncoder() {
-        transformers = new HashMap<String, Transformer>();
-        blocks = new ArrayList<String>();
-    }
-
-    /**
-     * Adds a block of a packet to encode.
-     *
-     * @param name  The name of the block to add.
-     */
-    public void addBlock(String name) {
-        blocks.add(name);
-    }
-
-    /**
-     * Adds a transformer for a specific block.
-     *
-     * @param name          The name of the block.
-     * @param transformer   The transformer to add.
-     */
-    public void addTransformer(String name, Transformer transformer) {
-        transformers.put(name, transformer);
-    }
+    public PacketEncoder() {}
 
     @Override
-    public ByteBuffer encode(Packet packet) {
+    public ByteBuffer encode(PacketEncoderState state) {
+
+        /* Get the packet to encode from the state */
+        Packet packet =  state.getPacket();
 
         /* Check if the packet contains the required blocks */
         if(containsRequiredBlocks(packet)) {
-            throw new IllegalStateException("Packet does not contain required blocks");    // Possibly return null?
+            throw new IllegalStateException("packet does not contain required blocks");    // Possibly return null?
         }
         
         /* Calculate the length of the body */
@@ -103,7 +69,22 @@ public final class PacketEncoder implements Encoder<Packet, ByteBuffer> {
         /* Allocate the byte buffer */
         ByteBuffer buffer = ByteBuffer.allocate(headerLength + length);
 
-        /* Put the opcode of the packet TODO: Add in the cryption */
+        /* Put the opcode of the packet */
+        int opcode = packet.getDescriptor().getOpcode();
+
+        /* Spoof the opcode of the packet if required */
+        if(state.useCipher()) {
+
+            /* Check to make sure the cipher is not null */
+            ISAACCipher cipher = state.getCipher();
+            if(cipher == null) {
+                throw new IllegalStateException("cipher cannot be null");
+            }
+
+            /* Add the next value to the opcode */
+            opcode += cipher.getNextValue();
+        }
+
         buffer.put((byte) packet.getDescriptor().getOpcode());
 
         /* Encode the size of the packet into the buffer */
@@ -129,22 +110,6 @@ public final class PacketEncoder implements Encoder<Packet, ByteBuffer> {
         }
 
         return buffer;
-    }
-
-    /**
-     * Checks if a packet contains all the required blocks.
-     *
-     * @param packet    The packet to check if it contains the required blocks.
-     * @return          If the packet contains the required blocks.
-     */
-    private boolean containsRequiredBlocks(Packet packet) {
-        for(String name : blocks) {
-            if(!packet.containsBlock(name)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**

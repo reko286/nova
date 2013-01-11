@@ -38,6 +38,16 @@ public final class NumericBlock extends PacketBlock<Number> {
 
     /**
      * Constructs a new {@link NumericBlock};
+     * The default value of the block is the integer, zero.
+     * 
+     * @param type  The type of the numeric block.
+     */
+    public NumericBlock(NumericType type) {
+        this(0, type);
+    }
+
+    /**
+     * Constructs a new {@link NumericBlock};
      *
      * @param value The value of the numeric block.
      * @param type  The type of the numeric block.

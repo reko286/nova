@@ -20,36 +20,40 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.event;
+package org.nova.net.packet.codec;
 
-import org.nova.event.Event;
-
-import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
+import org.nova.net.Packet;
 
 /**
  * Created by Hadyn Richard
  */
-public final class WriteEvent extends Event {
+public final class PacketEncoderState extends PacketCodecState {
 
     /**
-     * The socket channel to write to.
+     * The packet to be encoded.
      */
-    private SocketChannel socketChannel;
+    private Packet packet;
 
     /**
-     * The selector which the read interest was indicated from.
+     * Constructs a new {@link PacketEncoderState};
      */
-    private Selector selector;
+    public PacketEncoderState() {}
 
     /**
-     * Constructs a new {@link WriteEvent};
+     * Sets the packet to be encoded.
      *
-     * @param socketChannel The socket channel to write to.
-     * @param selector      The selector which the read interest was indicated from.
+     * @param packet    The packet to be encoded.
      */
-    public WriteEvent(SocketChannel socketChannel, Selector selector) {
-        this.socketChannel = socketChannel;
-        this.selector = selector;
+    public void setPacket(Packet packet) {
+        this.packet = packet;
+    }
+
+    /**
+     * Gets the packet to be encoded.
+     *
+     * @return  The packet to be encoded.
+     */
+    public Packet getPacket() {
+        return packet;
     }
 }

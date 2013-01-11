@@ -20,20 +20,40 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.codec;
-
-import org.nova.net.Packet;
-import org.nova.util.Decoder;
+package org.nova.net.packet.codec;
 
 import java.nio.ByteBuffer;
 
 /**
  * Created by Hadyn Richard
  */
-public final class PacketDecoder implements Decoder<ByteBuffer, Packet> {
+public final class PacketDecoderState extends PacketCodecState {
 
-    @Override
-    public Packet decode(ByteBuffer byteBuffer) {
-        return null;
+    /**
+     * The buffer to use to decode the packet from.
+     */
+    private ByteBuffer buffer;
+    
+    /**
+     * Constructs a new {@link PacketDecoderState};
+     */
+    public PacketDecoderState() {}
+
+    /**
+     * Sets the buffer to use to encode the packets from.
+     *
+     * @param buffer    The buffer to use.
+     */
+    public void setBuffer(ByteBuffer buffer) {
+        this.buffer = buffer;
+    }
+
+    /**
+     * Gets the buffer to use to decode the packets from.
+     *
+     * @return  The buffer.
+     */
+    public ByteBuffer getBuffer() {
+        return buffer;
     }
 }

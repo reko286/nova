@@ -29,11 +29,13 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import org.nova.core.Dispatcher;
 import org.nova.event.Event;
-import org.nova.net.event.AcceptEvent;
-import org.nova.net.event.ReadEvent;
-import org.nova.net.event.WriteEvent;
+import org.nova.net.event.SocketChannelEvent;
+import org.nova.net.event.SocketChannelEvent.SocketInterest;
 
-public class Reactor extends Dispatcher {
+/**
+ * Created by Trey, Hadyn Richard
+ */
+public final class Reactor extends Dispatcher {
 
     /**
      * The selector to use for the reactor.
@@ -63,6 +65,8 @@ public class Reactor extends Dispatcher {
                 SelectionKey key = it.next();
                 it.remove();
                 if (key.isValid()) {
+                    Event event = null;
+
                     if (key.isAcceptable()) {
 
                         /* Accept the socket channel */
@@ -74,22 +78,24 @@ public class Reactor extends Dispatcher {
                             continue;
                         }
 
-                        /* Create the accept event and propagate it down the event handler chain */
-                        Event event = new AcceptEvent(socketChannel, selector);
-                        getHandlerChainFor(event).createNewEventHandlerChainContext(event).doAll();
+                        /* Create the socket channel event with the accept socket interest */
+                        event = new SocketChannelEvent(socketChannel, selector, SocketInterest.ACCEPT);
                     } else if (key.isReadable()) {
                         
                         SocketChannel socketChannel = (SocketChannel) key.channel();
 
-                        /* Create the read event and propagate it down the event handler chain */
-                        Event event = new ReadEvent(socketChannel, selector);
-                        getHandlerChainFor(event).createNewEventHandlerChainContext(event).doAll();
+                        /* Create the socket channel event with the read socket interest */
+                        event = new SocketChannelEvent(socketChannel, selector, SocketInterest.READ);
                     } else if (key.isWritable()) {
 
                         SocketChannel socketChannel = (SocketChannel) key.channel();
 
-                        /* Create the write event and propagate it down the event handler chain */
-                        Event event = new WriteEvent(socketChannel, selector);
+                        /* Create the socket channel event with the write socket interest */
+                        event = new SocketChannelEvent(socketChannel, selector, SocketInterest.WRITE);
+                    }
+
+                    /* Propagate the event down the event handler chain if a valid interest was specified */
+                    if(event != null) {
                         getHandlerChainFor(event).createNewEventHandlerChainContext(event).doAll();
                     }
                 }

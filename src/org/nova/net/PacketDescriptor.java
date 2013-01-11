@@ -27,27 +27,74 @@ package org.nova.net;
  * Created by Hadyn Richard
  * 
  * Describes a packet.
+ *
+ * Notes:
+ *          Could this possibly be a bit cleaner?
  */
 public final class PacketDescriptor {
-    
+
     /**
      * The opcode for the packet.
      */
-    private final int opcode;
+    private int opcode;
     
     /**
      * The size for the packet.
      */
-    private final PacketSize size;
+    private PacketSize size;
+
+    /**
+     * The actual size of the packet.
+     */
+    private int actualSize;
 
     /**
      * Constructs a new {@link PacketDescriptor};
      * 
      * @param opcode    The packet opcode.
+     * @param size      The size of the packet.
      */
     public PacketDescriptor(int opcode, PacketSize size) {
         this.opcode = opcode;
         this.size = size;
+
+        /* Check if the size is valid */
+        if(size == PacketSize.STATIC) {
+            throw new IllegalStateException("cannot be static sized without indicating the actual size");
+        }
+            
+        /* Set the actual size to the appropriate value based on what type of size it is */
+        if(size == PacketSize.VAR_BYTE) {
+            actualSize = -1;
+        } else {
+            actualSize = -2;
+        }
+    }
+
+    /**
+     * Constructs a new {@link PacketDescriptor};
+     * Specifically for STATIC packets ONLY, sets the packet size to STATIC.
+     *
+     * 
+     * @param opcode        The packet opcode.
+     * @param actualSize    The actual size of the packet.
+     */
+    public PacketDescriptor(int opcode, int actualSize) {
+        this.opcode = opcode;
+        this.actualSize = actualSize;
+
+        /* Set the packet size to static since the actual size is set */
+        size = PacketSize.STATIC;
+    }
+
+    /**
+     * Gets the actual size of the packet.
+     *
+     * @return  The actual size of the packet, if the packet is a variety byte sized then this will return
+     *          negative one for variety byte sized packets and negative two for variety short sized packets.
+     */
+    public int getActualSize() {
+        return actualSize;
     }
     
     /**

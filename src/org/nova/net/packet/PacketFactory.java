@@ -20,36 +20,19 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.event;
+package org.nova.net.packet;
 
-import org.nova.event.Event;
-
-import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
+import org.nova.net.Packet;
 
 /**
  * Created by Hadyn Richard
  */
-public final class ReadEvent extends Event {
+public abstract class PacketFactory {
 
     /**
-     * The socket channel to read from.
-     */
-    private SocketChannel socketChannel;
-
-    /**
-     * The selector which the read interest was indicated from.
-     */
-    private Selector selector;
-
-    /**
-     * Constructs a new {@link ReadEvent};
+     * Creates a new packet.
      *
-     * @param socketChannel The socket channel to read from.
-     * @param selector      The selector which the read interest was indicated from.
+     * @return  The created packet.
      */
-    public ReadEvent(SocketChannel socketChannel, Selector selector) {
-        this.socketChannel = socketChannel;
-        this.selector = selector;
-    }
+    public abstract Packet create();
 }
