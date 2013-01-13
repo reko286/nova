@@ -22,16 +22,44 @@
 
 package org.nova.net;
 
+import org.nova.net.packet.codec.impl.PacketDecoderState;
+
+import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
 /**
  * Created by Hadyn Richard
  */
 public final class Client {
-    
+
+    /**
+     * The packet decoder state for this client.
+     */
+    private PacketDecoderState decoderState;
+
     /**
      * Constructs a new {@link Client};
      */
-    public Client(SelectionKey selectionKey) {}
+    public Client(SelectionKey selectionKey) {
+        decoderState = new PacketDecoderState();
+        decoderState.setBuffer(ByteBuffer.allocate(5000));
+    }
 
+    /**
+     * Gets the packet decoder state.
+     *
+     * @return  The decoder state.
+     */
+    public PacketDecoderState getDecoderState() {
+        return decoderState;
+    }
+
+    /**
+     * Gets the input buffer for this client.
+     *
+     * @return  The input buffer.
+     */
+    public ByteBuffer getInputBuffer() {
+        return decoderState.getBuffer();
+    }
 }

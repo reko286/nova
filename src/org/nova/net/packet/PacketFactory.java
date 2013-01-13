@@ -23,6 +23,7 @@
 package org.nova.net.packet;
 
 import org.nova.net.Packet;
+import org.nova.net.PacketDescriptor;
 
 /**
  * Created by Hadyn Richard
@@ -35,4 +36,11 @@ public abstract class PacketFactory {
      * @return  The created packet.
      */
     public abstract Packet create();
+
+    /**
+     * Gets the descriptor for the packets being created.
+     *
+     * @return  The descriptor.
+     */
+    public abstract PacketDescriptor getDescriptor();
 }

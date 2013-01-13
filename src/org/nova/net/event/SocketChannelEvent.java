@@ -24,6 +24,7 @@ package org.nova.net.event;
 
 import org.nova.event.Event;
 
+import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
@@ -64,6 +65,11 @@ public final class SocketChannelEvent extends Event {
     private Selector selector;
 
     /**
+     * The selection key that was used to indicate interest.
+     */
+    private SelectionKey selectionKey;
+
+    /**
      * The interest for the socket.
      */
     private SocketInterest interest;
@@ -73,11 +79,48 @@ public final class SocketChannelEvent extends Event {
      *
      * @param socketChannel The socket channel that triggered the event.
      * @param selector      The selector which the interest was indicated from.
+     * @param selectionKey  The selection key that was used indicate interest.
      * @param interest      The interest of the socket.
      */
-    public SocketChannelEvent(SocketChannel socketChannel, Selector selector, SocketInterest interest) {
+    public SocketChannelEvent(SocketChannel socketChannel, Selector selector, SelectionKey selectionKey, SocketInterest interest) {
         this.socketChannel = socketChannel;
         this.selector = selector;
         this.interest = interest;
+    }
+
+    /**
+     * Gets the socket channel that triggered this event.
+     *
+     * @return  The socket channel.
+     */
+    public SocketChannel getSocketChannel() {
+        return socketChannel;
+    }
+
+    /**
+     * Gets the selector which the interest was indicated from.
+     *
+     * @return  The selector.
+     */
+    public Selector getSelector() {
+        return selector;
+    }
+
+    /**
+     * Gets the selection key.
+     *
+     * @return  The selection key.
+     */
+    public SelectionKey getSelectionKey() {
+        return selectionKey;
+    }
+
+    /**
+     * Gets the interest for the socket.
+     *
+     * @return  The interest.
+     */
+    public SocketInterest getInterest() {
+        return interest;
     }
 }

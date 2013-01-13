@@ -20,40 +20,50 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.packet.codec;
+package org.nova.net;
 
-import org.nova.net.Packet;
+import java.nio.channels.SelectionKey;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Hadyn Richard
+ *
+ * Notes:
+ *
+ *          Is the SelectionKey the best thing to use?
  */
-public final class PacketEncoderState extends PacketCodecState {
+public final class ClientPool {
 
     /**
-     * The packet to be encoded.
+     * The map of clients.
      */
-    private Packet packet;
+    private Map<SelectionKey, Client> clients;
 
     /**
-     * Constructs a new {@link PacketEncoderState};
+     * Constructs a new {@link ClientPool};
      */
-    public PacketEncoderState() {}
-
-    /**
-     * Sets the packet to be encoded.
-     *
-     * @param packet    The packet to be encoded.
-     */
-    public void setPacket(Packet packet) {
-        this.packet = packet;
+    public ClientPool() {
+        clients = new HashMap<SelectionKey, Client>();
     }
 
     /**
-     * Gets the packet to be encoded.
+     * Registers a client to a specified selection key.
      *
-     * @return  The packet to be encoded.
+     * @param client    The client to register.
+     * @param key       The
      */
-    public Packet getPacket() {
-        return packet;
+    public void register(Client client, SelectionKey key) {
+        clients.put(key, client);
+    }
+
+    /**
+     * Gets a client from its selection key.
+     *
+     * @param key   The selection key of the client to get.
+     * @return      The client for the selection key or null if client does not exist.
+     */
+    public Client getClient(SelectionKey key) {
+        return clients.get(key);
     }
 }

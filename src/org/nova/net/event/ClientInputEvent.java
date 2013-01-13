@@ -20,40 +20,34 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.packet.codec;
+package org.nova.net.event;
 
-import java.nio.ByteBuffer;
+import org.nova.event.Event;
+import org.nova.net.Client;
 
 /**
  * Created by Hadyn Richard
  */
-public final class PacketDecoderState extends PacketCodecState {
+public final class ClientInputEvent extends Event {
 
     /**
-     * The buffer to use to decode the packet from.
+     * The client from which input was received.
      */
-    private ByteBuffer buffer;
-    
-    /**
-     * Constructs a new {@link PacketDecoderState};
-     */
-    public PacketDecoderState() {}
+    private Client client;
 
     /**
-     * Sets the buffer to use to encode the packets from.
-     *
-     * @param buffer    The buffer to use.
+     * Constructs a new {@link ClientInputEvent};
      */
-    public void setBuffer(ByteBuffer buffer) {
-        this.buffer = buffer;
+    public ClientInputEvent(Client client) {
+        this.client = client;
     }
 
     /**
-     * Gets the buffer to use to decode the packets from.
+     * Gets the client.
      *
-     * @return  The buffer.
+     * @return  The client.
      */
-    public ByteBuffer getBuffer() {
-        return buffer;
+    public Client getClient() {
+        return client;
     }
 }

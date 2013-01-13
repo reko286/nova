@@ -79,19 +79,19 @@ public final class Reactor extends Dispatcher {
                         }
 
                         /* Create the socket channel event with the accept socket interest */
-                        event = new SocketChannelEvent(socketChannel, selector, SocketInterest.ACCEPT);
+                        event = new SocketChannelEvent(socketChannel, selector, key, SocketInterest.ACCEPT);
                     } else if (key.isReadable()) {
                         
                         SocketChannel socketChannel = (SocketChannel) key.channel();
 
                         /* Create the socket channel event with the read socket interest */
-                        event = new SocketChannelEvent(socketChannel, selector, SocketInterest.READ);
+                        event = new SocketChannelEvent(socketChannel, selector, key, SocketInterest.READ);
                     } else if (key.isWritable()) {
 
                         SocketChannel socketChannel = (SocketChannel) key.channel();
 
                         /* Create the socket channel event with the write socket interest */
-                        event = new SocketChannelEvent(socketChannel, selector, SocketInterest.WRITE);
+                        event = new SocketChannelEvent(socketChannel, selector, key, SocketInterest.WRITE);
                     }
 
                     /* Propagate the event down the event handler chain if a valid interest was specified */

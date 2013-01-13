@@ -20,13 +20,15 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.packet.codec;
+package org.nova.net.packet.codec.impl;
 
 import org.nova.net.ISAACCipher;
 import org.nova.net.Packet;
 import org.nova.net.PacketBlock;
-import org.nova.net.PacketSize;
+import org.nova.net.packet.codec.PacketCodec;
 import org.nova.util.Encoder;
+
+import static org.nova.net.PacketDescriptor.*;
 
 import java.nio.ByteBuffer;
 
@@ -88,9 +90,9 @@ public final class PacketEncoder extends PacketCodec implements Encoder<PacketEn
         buffer.put((byte) packet.getDescriptor().getOpcode());
 
         /* Encode the size of the packet into the buffer */
-        PacketSize size = packet.getDescriptor().getSize();
-        if(size != PacketSize.STATIC) {
-            if(size == PacketSize.VAR_SHORT) {
+        int size = packet.getDescriptor().getSize();
+        if(size < 0) {
+            if(size == VAR_SHORT) {
                 buffer.putShort((short) length);
             } else {
                 buffer.put((byte) length);
@@ -118,10 +120,8 @@ public final class PacketEncoder extends PacketCodec implements Encoder<PacketEn
      * @param size  The packet size to get the length for.
      * @return      The length for the provided packet size.
      */
-    private static int getLengthForPacketSize(PacketSize size) {
+    private static int getLengthForPacketSize(int size) {
         switch(size) {
-            case STATIC:
-                return 0;
 
             case VAR_BYTE:
                 return 1;

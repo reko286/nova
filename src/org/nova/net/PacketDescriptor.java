@@ -34,19 +34,24 @@ package org.nova.net;
 public final class PacketDescriptor {
 
     /**
+     * The numeric representation for a variety byte sized packet.
+     */
+    public static final int VAR_BYTE = -1;
+
+    /**
+     * The numeric representation for a variety short sized packet.
+     */
+    public static final int VAR_SHORT = -2;
+
+    /**
      * The opcode for the packet.
      */
     private int opcode;
-    
-    /**
-     * The size for the packet.
-     */
-    private PacketSize size;
 
     /**
-     * The actual size of the packet.
+     * The size of the packet.
      */
-    private int actualSize;
+    private int size;
 
     /**
      * Constructs a new {@link PacketDescriptor};
@@ -54,47 +59,14 @@ public final class PacketDescriptor {
      * @param opcode    The packet opcode.
      * @param size      The size of the packet.
      */
-    public PacketDescriptor(int opcode, PacketSize size) {
+    public PacketDescriptor(int opcode, int size) {
         this.opcode = opcode;
         this.size = size;
 
         /* Check if the size is valid */
-        if(size == PacketSize.STATIC) {
-            throw new IllegalStateException("cannot be static sized without indicating the actual size");
+        if(size != VAR_BYTE && size != VAR_SHORT && size < 0) {
+            throw new IllegalArgumentException("invalid size");
         }
-            
-        /* Set the actual size to the appropriate value based on what type of size it is */
-        if(size == PacketSize.VAR_BYTE) {
-            actualSize = -1;
-        } else {
-            actualSize = -2;
-        }
-    }
-
-    /**
-     * Constructs a new {@link PacketDescriptor};
-     * Specifically for STATIC packets ONLY, sets the packet size to STATIC.
-     *
-     * 
-     * @param opcode        The packet opcode.
-     * @param actualSize    The actual size of the packet.
-     */
-    public PacketDescriptor(int opcode, int actualSize) {
-        this.opcode = opcode;
-        this.actualSize = actualSize;
-
-        /* Set the packet size to static since the actual size is set */
-        size = PacketSize.STATIC;
-    }
-
-    /**
-     * Gets the actual size of the packet.
-     *
-     * @return  The actual size of the packet, if the packet is a variety byte sized then this will return
-     *          negative one for variety byte sized packets and negative two for variety short sized packets.
-     */
-    public int getActualSize() {
-        return actualSize;
     }
     
     /**
@@ -105,13 +77,50 @@ public final class PacketDescriptor {
     public int getOpcode() {
         return opcode;
     }
+
+    /**
+     * Gets if this packet is variety short or byte sized.
+     *
+     * @return  If the packet is variety sized.
+     */
+    public boolean isVarietySized() {
+        return size == VAR_BYTE || size == VAR_SHORT;
+    }
+
+    /**
+     * Gets if this packet is variety byte sized.
+     *
+     * @return  If the packet is variety byte sized.
+     */
+    public boolean isVarietyByteSized() {
+        return size == VAR_BYTE;
+    }
+
+    /**
+     * Gets if this packet is variety short sized.
+     *
+     * @return  If the packet is variety short sized.
+     */
+    public boolean isVarietyShortSized() {
+        return size == VAR_SHORT;
+    }
     
     /**
      * Gets the packet size for this descriptor.
      * 
      * @return  The size.
      */
-    public PacketSize getSize() {
+    public int getSize() {
         return size;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || !(obj instanceof PacketDescriptor)) {
+            return false;
+        }
+
+        PacketDescriptor other = (PacketDescriptor) obj;
+        return other.size == size && other.opcode == opcode;
     }
 }

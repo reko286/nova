@@ -20,28 +20,41 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net;
+package org.nova.net.packet.codec.impl;
+
+import org.nova.net.Packet;
+import org.nova.net.packet.codec.PacketCodecState;
 
 /**
  * Created by Hadyn Richard
- * 
- * Each of the enumerations for a packet's possible size.
  */
-public enum PacketSize {
-    
-    /**
-     * Static sized packets only have one length.
-     */
-    STATIC,
-    
-    /**
-     * Variable byte length packets have a range in size from 0 to 255, inclusive.
-     */
-    VAR_BYTE,
-    
-    /**
-     * Variable short length packets have a range in size from 0 to 65535, inclusive.
-     */
-    VAR_SHORT
+public final class PacketEncoderState extends PacketCodecState {
 
+    /**
+     * The packet to be encoded.
+     */
+    private Packet packet;
+
+    /**
+     * Constructs a new {@link PacketEncoderState};
+     */
+    public PacketEncoderState() {}
+
+    /**
+     * Sets the packet to be encoded.
+     *
+     * @param packet    The packet to be encoded.
+     */
+    public void setPacket(Packet packet) {
+        this.packet = packet;
+    }
+
+    /**
+     * Gets the packet to be encoded.
+     *
+     * @return  The packet to be encoded.
+     */
+    public Packet getPacket() {
+        return packet;
+    }
 }
