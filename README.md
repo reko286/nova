@@ -23,7 +23,7 @@ I like idea number two, it allows for external explicit control of how a client 
 
 - Possibly add 'register' method to each service or even add a 'ClientDomain' where clients are allowed to be registered.
 
-Notes:
+#### Notes:
 
 I like the idea of adding in a 'ClientDomain' class considering I do not want to add in extra functionality to the 'Service'
 class. It seems like the 'Service' class will be saturated more and more by features that may not even be used.
