@@ -44,7 +44,7 @@ public final class PacketDecoderState extends PacketCodecState {
         /**
          * The stage representing that the bytes of the packet have yet to be read.
          */
-        AWAITING_BYTES,
+        AWAITING_BYTES
 
     }
 

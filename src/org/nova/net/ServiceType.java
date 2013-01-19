@@ -20,53 +20,27 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.event;
-
-import org.nova.event.Event;
-import org.nova.net.Client;
-import org.nova.net.ClientInputContext;
+package org.nova.net;
 
 /**
  * Created by Hadyn Richard
+ *
+ * The enumeration for each of the network handler types.
  */
-public final class ClientInputEvent extends Event {
+public enum ServiceType {
 
     /**
-     * The client from which input was received.
+     * The enumeration for the gateway handler type.
      */
-    private Client client;
+    GATEWAY,
 
     /**
-     * The context from which the event was received from.
+     * The enumeration for the game handler type.
      */
-    private ClientInputContext context;
+    GAME,
 
     /**
-     * Constructs a new {@link ClientInputEvent};
-     *
-     * @param client    The client from which the input was received.
-     * @param context   The context from which the event was received from.
+     * The enumeration for the ondemand handler type.
      */
-    public ClientInputEvent(Client client, ClientInputContext context) {
-        this.client = client;
-        this.context = context;
-    }
-
-    /**
-     * Gets the client.
-     *
-     * @return  The client.
-     */
-    public Client getClient() {
-        return client;
-    }
-
-    /**
-     * Gets the context from which the event was received from.
-     *
-     * @return  The context.
-     */
-    public ClientInputContext getContext() {
-        return context;
-    }
+    ONDEMAND
 }

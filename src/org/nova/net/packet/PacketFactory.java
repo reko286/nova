@@ -31,6 +31,18 @@ import org.nova.net.PacketDescriptor;
 public abstract class PacketFactory {
 
     /**
+     * The descriptor for the packet factory.
+     */
+    private PacketDescriptor descriptor;
+
+    /**
+     * Constructs a new {@link PacketFactory};
+     */
+    public PacketFactory(PacketDescriptor descriptor) {
+        this.descriptor = descriptor;
+    }
+
+    /**
      * Creates a new packet.
      *
      * @return  The created packet.
@@ -42,5 +54,7 @@ public abstract class PacketFactory {
      *
      * @return  The descriptor.
      */
-    public abstract PacketDescriptor getDescriptor();
+    public final PacketDescriptor getDescriptor() {
+        return descriptor;
+    }
 }

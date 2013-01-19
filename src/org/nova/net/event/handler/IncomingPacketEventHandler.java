@@ -22,11 +22,14 @@
 
 package org.nova.net.event.handler;
 
+import org.nova.event.Event;
 import org.nova.event.EventHandler;
 import org.nova.event.EventHandlerChainContext;
+import org.nova.net.ServiceType;
 import org.nova.net.ISAACCipher;
 import org.nova.net.Packet;
 import org.nova.net.event.ClientInputEvent;
+import org.nova.net.event.PacketParsedEvent;
 import org.nova.net.packet.PacketFactory;
 import org.nova.net.packet.codec.impl.PacketDecoder;
 import org.nova.net.packet.codec.impl.PacketDecoderState;
@@ -47,7 +50,7 @@ public final class IncomingPacketEventHandler extends EventHandler<ClientInputEv
     /**
      * Constructs a new {@link IncomingPacketEventHandler};
      *
-     * @param decoder   The decoder to use in order to decode packets.
+     * @param decoder       The decoder to use in order to decode packets.
      */
     public IncomingPacketEventHandler(PacketDecoder decoder) {
         this.decoder = decoder;
@@ -62,10 +65,13 @@ public final class IncomingPacketEventHandler extends EventHandler<ClientInputEv
 
             /* Check if we can parse the packet id from the buffer */
             ByteBuffer buffer = state.getBuffer();
-            if(buffer.remaining() < 0) {
+            if(buffer.remaining() < 1) {
 
                 /* Stop propagating any further past this point */
                 context.stop();
+
+                /* Stop the context from looping */
+                event.getContext().setLoop(false);
                 return;
             }
 
@@ -99,10 +105,24 @@ public final class IncomingPacketEventHandler extends EventHandler<ClientInputEv
         /* Decode the packet and check if it successfully decoded */
         Packet packet = decoder.decode(state);
         if(packet == null) {
+
+            /* Stop the context from looping */
+            event.getContext().setLoop(false);
+
             return;
         }
 
+        /* Get the buffer that was used to parse the packet and compact, and rewind it */
+        ByteBuffer buffer = state.getBuffer();
+        buffer.compact().rewind();
+
         /* Alert that we are now awaiting for an id again */
         state.setStage(Stage.AWAITING_ID);
+
+        /* Tell the context to continue looping */
+        event.getContext().setLoop(true);
+
+        /* Add the packet to the clients incoming packet queue */
+        event.getClient().addIncomingPacket(packet);
     }
 }

@@ -26,6 +26,7 @@ import org.nova.event.EventHandler;
 import org.nova.event.EventHandlerChainContext;
 import org.nova.net.Client;
 import org.nova.net.ClientPool;
+import org.nova.net.ServiceType;
 import org.nova.net.event.SocketChannelEvent;
 
 import java.nio.channels.ClosedChannelException;
@@ -75,6 +76,10 @@ public final class SocketChannelAcceptEventHandler extends EventHandler<SocketCh
 
         /* Register the client to the client pool */
         Client client = new Client(key);
+
+        /* By default set the handler type as the gateway */
+        client.setServiceType(ServiceType.GATEWAY);
+
         clientPool.register(client, key);
     }
 }

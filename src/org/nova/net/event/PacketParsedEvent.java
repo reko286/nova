@@ -24,49 +24,40 @@ package org.nova.net.event;
 
 import org.nova.event.Event;
 import org.nova.net.Client;
-import org.nova.net.ClientInputContext;
+import org.nova.net.Packet;
 
 /**
  * Created by Hadyn Richard
  */
-public final class ClientInputEvent extends Event {
+public final class PacketParsedEvent extends Event {
 
     /**
-     * The client from which input was received.
+     * The client from which the packet was parsed for.
      */
     private Client client;
 
     /**
-     * The context from which the event was received from.
+     * The packet that was parsed.
      */
-    private ClientInputContext context;
+    private Packet packet;
 
     /**
-     * Constructs a new {@link ClientInputEvent};
+     * Constructs a new {@link PacketParsedEvent};
      *
-     * @param client    The client from which the input was received.
-     * @param context   The context from which the event was received from.
+     * @param client    The client from which the packet was parsed for.
+     * @param packet    The packet that was parsed.
      */
-    public ClientInputEvent(Client client, ClientInputContext context) {
+    public PacketParsedEvent(Client client, Packet packet) {
         this.client = client;
-        this.context = context;
+        this.packet = packet;
     }
 
     /**
-     * Gets the client.
+     * Gets the packet that was parsed.
      *
-     * @return  The client.
+     * @return  The packet.
      */
-    public Client getClient() {
-        return client;
-    }
-
-    /**
-     * Gets the context from which the event was received from.
-     *
-     * @return  The context.
-     */
-    public ClientInputContext getContext() {
-        return context;
+    public Packet getPacket() {
+        return packet;
     }
 }

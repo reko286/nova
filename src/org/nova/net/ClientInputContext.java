@@ -20,53 +20,46 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.event;
-
-import org.nova.event.Event;
-import org.nova.net.Client;
-import org.nova.net.ClientInputContext;
+package org.nova.net;
 
 /**
  * Created by Hadyn Richard
+ *
+ * Notes:
+ *
+ *          The reason why I did not merge the methods/fields of this class with the client input event was because
+ *          an event is not supposed to be reusable. The use of the context object allows for the context to be reused
+ *          between multiple event objects and hold state values for that process.
  */
-public final class ClientInputEvent extends Event {
+public final class ClientInputContext {
 
     /**
-     * The client from which input was received.
+     * The flag for if the data should be continued to be parsed.
      */
-    private Client client;
+    private boolean loop;
 
     /**
-     * The context from which the event was received from.
+     * Constructs a new {@link ClientInputContext};
      */
-    private ClientInputContext context;
+    public ClientInputContext() {}
 
     /**
-     * Constructs a new {@link ClientInputEvent};
+     * Sets if the data parsed from the client should be continued to be parsed
+     * by the client input event handler chain.
      *
-     * @param client    The client from which the input was received.
-     * @param context   The context from which the event was received from.
+     * @param loop  The loop flag.
      */
-    public ClientInputEvent(Client client, ClientInputContext context) {
-        this.client = client;
-        this.context = context;
+    public void setLoop(boolean loop) {
+        this.loop = loop;
     }
 
     /**
-     * Gets the client.
+     * Gets if the data parsed from the client should be continued to be parsed
+     * by the client input event handler chain.
      *
-     * @return  The client.
+     * @return  The loop flag.
      */
-    public Client getClient() {
-        return client;
-    }
-
-    /**
-     * Gets the context from which the event was received from.
-     *
-     * @return  The context.
-     */
-    public ClientInputContext getContext() {
-        return context;
+    public boolean getLoop() {
+        return loop;
     }
 }

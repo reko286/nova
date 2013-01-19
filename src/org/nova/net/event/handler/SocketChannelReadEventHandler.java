@@ -27,7 +27,9 @@ import org.nova.event.EventHandler;
 import org.nova.event.EventHandlerChain;
 import org.nova.event.EventHandlerChainContext;
 import org.nova.net.Client;
+import org.nova.net.ClientInputContext;
 import org.nova.net.ClientPool;
+import org.nova.net.ServiceType;
 import org.nova.net.event.ClientInputEvent;
 import org.nova.net.event.SocketChannelEvent;
 
@@ -50,14 +52,21 @@ public final class SocketChannelReadEventHandler extends EventHandler<SocketChan
     private EventHandlerChain chain;
 
     /**
+     * The type of service to handle for.
+     */
+    private ServiceType type;
+
+    /**
      * Constructs a new {@link SocketChannelReadEventHandler};
      *
      * @param clientPool    The client pool to grab clients from.
-     * @param chain         The event handler chain to use to propagate further events down to.
+     * @param type          The type of service to handle for.
      */
-    public SocketChannelReadEventHandler(ClientPool clientPool, EventHandlerChain<ClientInputEvent> chain) {
+    public SocketChannelReadEventHandler(ClientPool clientPool, ServiceType type) {
         this.clientPool = clientPool;
-        this.chain = chain;
+        this.type = type;
+
+        this.chain = new EventHandlerChain<ClientInputEvent>();
     }
 
     @Override
@@ -68,24 +77,45 @@ public final class SocketChannelReadEventHandler extends EventHandler<SocketChan
             return;
         }
 
-        /* Stop the context from propagating further */
-        context.stop();
-
         /* Get the client for the selection key */
         Client client = clientPool.getClient(event.getSelectionKey());
 
         /* TODO: Figure out what we want to do if the client is null or even if this is possible */
+
+        /* Check to see if the type of service for the client is correct */
+        if(!client.getServiceType().equals(type)) {
+            return;
+        }
+
+        /* Stop the context from propagating further */
+        context.stop();
         
         /* Read the bytes from the socket channel to the client input buffer */
         try {
             SocketChannel channel = event.getSocketChannel();
             channel.read(client.getInputBuffer());
         } catch(IOException ex) {
-            /* TODO: Handle a disconnect here */
+
+            /* Disconnect the client */
+            client.disconnect();
+            return;
         }
 
+        ClientInputContext inputContext = new ClientInputContext();
+
         /* Create the input event and propagate it down the chain */
-        Event inputEvent = new ClientInputEvent(client);
-        chain.createNewEventHandlerChainContext(inputEvent).doAll();
+        do {
+            Event inputEvent = new ClientInputEvent(client, inputContext);
+            chain.createNewEventHandlerChainContext(inputEvent).doAll();
+        } while(inputContext.getLoop());
+    }
+
+    /**
+     * Gets the event handler chain for this handler.
+     *
+     * @return  The chain.
+     */
+    public EventHandlerChain<ClientInputEvent> getChain() {
+        return chain;
     }
 }
