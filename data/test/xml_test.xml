@@ -1,0 +1,19 @@
+<!--
+
+	Used to help test the XML decoderParser.
+	
+	Notes:
+
+			All of the nodes in here are used with the 'XMLTest.java' test. If they are removed, it may break test assertions.
+
+-->
+
+<root>
+	<first>
+		<inner>
+		</inner>
+	</first>
+
+	<attributed value="i_like_turtles">
+	</attributed>
+</root>

@@ -177,3 +177,5 @@ target/
 # Java
 
 *.class
+
+cache/

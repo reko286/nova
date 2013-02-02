@@ -1,0 +1,61 @@
+<!-- 
+
+	File to produce all the packet decoders for the server.
+
+ -->
+
+<decoders>
+
+	<decoder>
+		<service>GATEWAY</service>
+
+		<packet>ondemand_handshake</packet>
+
+		<id>15</id>
+
+		<blocks>
+			<block>
+				<name>client_build</name>
+			</block>
+		</blocks>
+		
+	</decoder>
+
+	<decoder>
+		<service>ONDEMAND</service>
+
+		<packet>archive_request</packet>
+
+		<id>0</id>
+
+		<blocks>
+			<block>
+				<name>index_id</name>
+			</block>
+
+			<block>
+				<name>archive_id</name>
+			</block>
+		</blocks>
+	
+	</decoder>
+
+	<decoder>
+		<service>ONDEMAND</service>
+
+		<packet>archive_request</packet>
+
+		<id>1</id>
+
+		<blocks>
+			<block>
+				<name>index_id</name>
+			</block>
+
+			<block>
+				<name>archive_id</name>
+			</block>
+		</blocks>
+	
+	</decoder>
+</decoders>

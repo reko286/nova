@@ -1,0 +1,214 @@
+<!-- 
+
+	File to produce all the packet meta data for the server.
+
+ -->
+
+<packets>
+
+	<packet>
+		<name>ondemand_handshake</name>
+
+		<size>4</size>
+
+		<variables>
+
+			<variable>
+				<name>client_build</name>
+				<type>INT32</type>
+			</variable>
+		</variables>
+		
+	</packet>
+
+	<packet>
+		<name>archive_request</name>
+
+		<size>3</size>
+
+		<variables>
+			
+			<variable>
+				<name>index_id</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>archive_id</name>
+				<type>INT16</type>
+			</variable>		
+		</variables>
+
+	</packet>
+
+	<packet>
+		<name>status_change</name>
+
+		<size>3</size>
+
+		<variables>
+			
+			<variable>
+				<name>padding</name>
+				<type>INT24</type>
+			</variable>	
+		</variables>
+
+	</packet>
+
+	<packet>
+		<name>update_appearance</name>
+
+		<size>13</size>
+
+		<variables>
+
+			<variable>
+				<name>is_male</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>appearance_0</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>appearance_1</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>appearance_2</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>appearance_3</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>appearance_4</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>appearance_5</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>appearance_6</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>colour_0</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>colour_1</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>colour_2</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>colour_3</name>
+				<type>INT8</type>
+			</variable>
+
+			<variable>
+				<name>colour_4</name>
+				<type>INT8</type>
+			</variable>
+		</variables>
+
+	</packet>
+
+	<packet>
+		<name>add_friend</name>
+
+		<size>8</size>
+
+		<variables>
+
+			<variable>
+				<name>name_hash</name>
+				<type>INT64</type>
+			</variable>
+		</variables>
+	</packet>
+
+	<packet>
+		<name>remove_friend</name>
+
+		<size>8</size>
+
+		<variables>
+
+			<variable>
+				<name>name_hash</name>
+				<type>INT64</type>
+			</variable>
+		</variables>
+	</packet>
+
+	<packet>
+		<name>add_ignore</name>
+
+		<size>8</size>
+
+		<variables>
+
+			<variable>
+				<name>name_hash</name>
+				<type>INT64</type>
+			</variable>
+		</variables>
+	</packet>
+
+	<packet>
+		<name>remove_ignore</name>
+
+		<size>8</size>
+
+		<variables>
+
+			<variable>
+				<name>name_hash</name>
+				<type>INT64</type>
+			</variable>
+		</variables>
+	</packet>
+
+	<packet>
+		<name>player_action</name>
+
+		<size>6</size>
+
+		<variables>
+			
+			<variable>
+				<name>id</name>
+				<type>INT16</type>
+			</variable>
+
+			<variable>
+				<name>position_x</name>
+				<type>INT16</type>
+			</variable>
+
+			<variable>
+				<name>position_y</name>
+				<type>INT16</type>
+			</variable>
+		</variables>
+
+	</packet>
+</packets>
