@@ -22,10 +22,10 @@
 
 package org.nova.net.packet.codec.impl;
 
-import org.nova.net.Packet;
-import org.nova.net.PacketBlock;
-import org.nova.net.PacketDescriptor;
-import org.nova.net.packet.PacketFactory;
+import org.nova.core.ServiceType;
+import org.nova.util.meta.PacketData;
+import org.nova.net.packet.Packet;
+import org.nova.net.packet.PacketBlock;
 import org.nova.net.packet.codec.PacketCodec;
 import org.nova.util.Decoder;
 import org.nova.net.packet.codec.impl.PacketDecoderState.Stage;
@@ -39,29 +39,52 @@ import java.nio.ByteBuffer;
  *
  *          - Possible check if factory creates packets that have the correct blocks in the constructor?
  */
-public final class PacketDecoder extends PacketCodec implements Decoder<PacketDecoderState, Packet> {
+public final class PacketDecoder extends PacketCodec implements Decoder<Packet, PacketDecoderState> {
 
     /**
-     * The factory to use to create new packets.
+     * The id for this decoder.
      */
-    private PacketFactory factory;
+    private int id;
+
+    /**
+     * The service type to decorate for.
+     */
+    private ServiceType serviceType;
+
+    /**
+     * The meta data to use to create new packets.
+     */
+    private PacketData data;
 
     /**
      * Constructs a new {@link PacketDecoder};
      *
-     * @parma factory   The factory to use to create new packets.
+     * @param id            The id for this decoder.
+     * @param serviceType   The service type to decorate for.
+     * @parma data      The meta data to use to create new packets.
      */
-    public PacketDecoder(PacketFactory factory) {
-        this.factory = factory;
+    public PacketDecoder(int id, ServiceType serviceType, PacketData data) {
+        this.id = id;
+        this.serviceType = serviceType;
+        this.data = data;
     }
 
     /**
-     * Gets the packet factory for this decoder.
+     * Gets the id of this decoder.
      *
-     * @return  The factory.
+     * @return  The id.
      */
-    public PacketFactory getFactory() {
-        return factory;
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Gets the service type to decorate for.
+     *
+     * @return  The service type.
+     */
+    public ServiceType getServiceType() {
+        return serviceType;
     }
 
     /**
@@ -78,18 +101,15 @@ public final class PacketDecoder extends PacketCodec implements Decoder<PacketDe
             throw new IllegalStateException("invalid stage");
         }
 
-        /* Get the descriptor for the packets being created */
-        PacketDescriptor descriptor = factory.getDescriptor();
-
         /* Get and mark the buffer */
         ByteBuffer buffer = state.getBuffer();
         buffer.mark();
 
         /* Parse the size if needed */
-        int size = descriptor.getSize();
-        if(descriptor.isVarietySized()) {
+        int size = data.getSize();
+        if(data.isVarietySized()) {
             
-            if(descriptor.isVarietyByteSized()) {
+            if(data.isVarietyByteSized()) {
 
                 /* Check if we have the required amount of bytes */
                 if(buffer.remaining() < 1) {
@@ -118,10 +138,10 @@ public final class PacketDecoder extends PacketCodec implements Decoder<PacketDe
         }
 
         /* Create a new packet */
-        Packet packet = factory.create();
+        Packet packet = data.create();
 
         /* Check if the packet contains the required blocks */
-        if(containsRequiredBlocks(packet)) {
+        if(!containsRequiredBlocks(packet)) {
             throw new IllegalStateException("packet does not contain required blocks");
         }
 

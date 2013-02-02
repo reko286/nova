@@ -29,11 +29,11 @@ import org.nova.event.EventHandlerChainContext;
 import org.nova.net.Client;
 import org.nova.net.ClientInputContext;
 import org.nova.net.ClientPool;
-import org.nova.net.ServiceType;
 import org.nova.net.event.ClientInputEvent;
 import org.nova.net.event.SocketChannelEvent;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -52,19 +52,12 @@ public final class SocketChannelReadEventHandler extends EventHandler<SocketChan
     private EventHandlerChain chain;
 
     /**
-     * The type of service to handle for.
-     */
-    private ServiceType type;
-
-    /**
      * Constructs a new {@link SocketChannelReadEventHandler};
      *
      * @param clientPool    The client pool to grab clients from.
-     * @param type          The type of service to handle for.
      */
-    public SocketChannelReadEventHandler(ClientPool clientPool, ServiceType type) {
+    public SocketChannelReadEventHandler(ClientPool clientPool) {
         this.clientPool = clientPool;
-        this.type = type;
 
         this.chain = new EventHandlerChain<ClientInputEvent>();
     }
@@ -82,18 +75,17 @@ public final class SocketChannelReadEventHandler extends EventHandler<SocketChan
 
         /* TODO: Figure out what we want to do if the client is null or even if this is possible */
 
-        /* Check to see if the type of service for the client is correct */
-        if(!client.getServiceType().equals(type)) {
-            return;
-        }
-
         /* Stop the context from propagating further */
         context.stop();
         
         /* Read the bytes from the socket channel to the client input buffer */
         try {
             SocketChannel channel = event.getSocketChannel();
-            channel.read(client.getInputBuffer());
+
+            /* Read to the input buffer and rewind it afterward */
+            ByteBuffer buffer = client.getInputBuffer();
+            channel.read(buffer);
+            buffer.rewind();
         } catch(IOException ex) {
 
             /* Disconnect the client */
@@ -103,8 +95,8 @@ public final class SocketChannelReadEventHandler extends EventHandler<SocketChan
 
         ClientInputContext inputContext = new ClientInputContext();
 
-        /* Create the input event and propagate it down the chain */
         do {
+            /* Create the input event and propagate it down the chain */
             Event inputEvent = new ClientInputEvent(client, inputContext);
             chain.createNewEventHandlerChainContext(inputEvent).doAll();
         } while(inputContext.getLoop());

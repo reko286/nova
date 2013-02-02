@@ -73,6 +73,8 @@ public final class Reactor extends Dispatcher {
                         ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
                         SocketChannel socketChannel = serverChannel.accept();
 
+                        socketChannel.configureBlocking(false);
+
                         /* Check if the accepted socket channel is valid */
                         if(socketChannel == null) {
                             continue;

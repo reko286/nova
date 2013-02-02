@@ -48,6 +48,20 @@ public abstract class Dispatcher {
     public Dispatcher() {
         handlerChains = new HashMap<Class<? extends Event>, EventHandlerChain<?>>();
     }
+
+    /**
+     * Handles an event.
+     *
+     * @param event The event to decorate.
+     */
+    public abstract void handleEvent(Event event);
+
+    /**
+     * Dispatches all the events for this reactor.
+     *
+     * @param executor  The executor service to dispatch events to.
+     */
+    public abstract void dispatchEvents(ExecutorService executor);
     
     /**
      * Registers an event handler to this reactor.
@@ -89,18 +103,4 @@ public abstract class Dispatcher {
     public EventHandlerChain getHandlerChainFor(Event event) {
         return handlerChains.get(event.getClass());
     }
-    
-    /**
-     * Handles an event.
-     * 
-     * @param event The event to handle.
-     */
-    public abstract void handleEvent(Event event);
-
-    /**
-     * Dispatches all the events for this reactor.
-     * 
-     * @param executor  The executor service to dispatch events to.
-     */
-    public abstract void dispatchEvents(ExecutorService executor);
 }

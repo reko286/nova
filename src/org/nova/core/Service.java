@@ -21,6 +21,8 @@
  */
 package org.nova.core;
 
+import org.nova.event.Event;
+
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -37,11 +39,6 @@ public abstract class Service {
      * The dispatcher for this service.
      */
     private Dispatcher dispatcher;
-    
-    /**
-     * The flag for if this service is currently running.
-     */
-    private boolean isRunning;
 
     /**
      * Constructs a new {@link Service};
@@ -52,7 +49,6 @@ public abstract class Service {
     public Service(ExecutorService executor, Dispatcher dispatcher) {
         this.executor = executor;
         this.dispatcher = dispatcher;
-        isRunning = true;
     }
 
     /**
@@ -63,18 +59,11 @@ public abstract class Service {
     }
 
     /**
-     * Stops this service.
-     */
-    public void stop() {
-        isRunning = false;
-    }
-
-    /**
      * Gets if the service is running.
      * 
      * @return  If the service is running.
      */
     public boolean isRunning() {
-        return isRunning;
+        return false;
     }
 }

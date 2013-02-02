@@ -22,39 +22,80 @@
 
 package org.nova.net.packet;
 
-import org.nova.net.Packet;
-import org.nova.net.PacketDescriptor;
-
 /**
  * Created by Hadyn Richard
  */
-public abstract class PacketFactory {
+public final class PacketVariable {
 
     /**
-     * The descriptor for the packet factory.
+     * The enumeration for each type of variable.
      */
-    private PacketDescriptor descriptor;
+    public enum VariableType {
 
-    /**
-     * Constructs a new {@link PacketFactory};
-     */
-    public PacketFactory(PacketDescriptor descriptor) {
-        this.descriptor = descriptor;
+        /**
+         * The byte variable type.
+         */
+        INT8,
+
+        /**
+         * The short variable type.
+         */
+        INT16,
+
+        /**
+         * The medium integer variable type.
+         */
+        INT24,
+
+        /**
+         * The integer variable type.
+         */
+        INT32,
+
+        /**
+         * The long variable type.
+         */
+        INT64,
+
+        /**
+         * The string variable type.
+         */
+        STRING
     }
 
     /**
-     * Creates a new packet.
-     *
-     * @return  The created packet.
+     * The name of the packet variable.
      */
-    public abstract Packet create();
+    private String name;
 
     /**
-     * Gets the descriptor for the packets being created.
-     *
-     * @return  The descriptor.
+     * The type that this variable represents.
      */
-    public final PacketDescriptor getDescriptor() {
-        return descriptor;
+    private VariableType type;
+    
+    /**
+     * Constructs a new {@link PacketVariable};
+     */
+    public PacketVariable(String name, VariableType type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    /**
+     * Gets the name of the variable.
+     *
+     * @return  The name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets the type of the variable.
+     *
+     * @return  The type.
+     */
+    public VariableType getType() {
+        return type;
     }
 }

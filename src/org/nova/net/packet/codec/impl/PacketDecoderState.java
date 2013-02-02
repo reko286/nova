@@ -49,9 +49,9 @@ public final class PacketDecoderState extends PacketCodecState {
     }
 
     /**
-     * The id for the packet currently being parsed.
+     * The id for the decoder of the packet being parsed.
      */
-    private int packetOpcode;
+    private int decoderId;
 
     /**
      * The buffer to use to decode the packet from.
@@ -69,21 +69,21 @@ public final class PacketDecoderState extends PacketCodecState {
     public PacketDecoderState() {}
 
     /**
-     * Sets the id of the packet currently being parsed.
+     * Sets the id for the decoder of the packet currently being parsed.
      *
-     * @param packetOpcode    The packet opcode.
+     * @param decoderId    The packet id.
      */
-    public void setPacketOpcode(int packetOpcode) {
-        this.packetOpcode = packetOpcode;
+    public void setDecoderId(int decoderId) {
+        this.decoderId = decoderId;
     }
 
     /**
-     * Gets the packet opcode.
+     * Gets the packet decoder id.
      *
-     * @return  The packet opcode.
+     * @return  The packet decoder id.
      */
-    public int getPacketOpcode() {
-        return packetOpcode;
+    public int getDecoderId() {
+        return decoderId;
     }
 
     /**

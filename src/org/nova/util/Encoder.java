@@ -30,8 +30,8 @@ public interface Encoder<T, V> {
     /**
      * Encodes a value from an input.
      * 
-     * @param t The input value.
+     * @param v The input value.
      * @return  The output value.
      */
-    public V encode(T t);
+    public T encode(V v);
 }

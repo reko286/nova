@@ -22,7 +22,7 @@
 
 package org.nova.net.packet.codec.impl;
 
-import org.nova.net.Packet;
+import org.nova.net.packet.Packet;
 import org.nova.net.packet.codec.PacketCodecState;
 
 /**

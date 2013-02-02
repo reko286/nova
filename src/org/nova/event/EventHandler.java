@@ -32,7 +32,7 @@ public abstract class EventHandler<T extends Event> {
     /**
      * Handles an event.
      * 
-     * @param event     The event to handle.
+     * @param event     The event to decorate.
      * @param context   The event handler chain context.
      */
     public abstract void handle(T event, EventHandlerChainContext<T> context);

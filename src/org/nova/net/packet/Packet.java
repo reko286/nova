@@ -20,27 +20,61 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net;
+package org.nova.net.packet;
+
+import java.util.Map;
 
 /**
  * Created by Hadyn Richard
- *
- * The enumeration for each of the network handler types.
  */
-public enum ServiceType {
+public final class Packet {
 
     /**
-     * The enumeration for the gateway handler type.
+     * The name of the packet.
      */
-    GATEWAY,
+    private String name;
 
     /**
-     * The enumeration for the game handler type.
+     * The packet blocks for this packet.
      */
-    GAME,
+    private Map<String, PacketBlock> packetBlocks;
+    
+    /**
+     * Constructs a new {@link Packet};
+     *
+     * @param packetBlocks  The packet blocks for the packet.
+     */
+    public Packet(String name, Map<String, PacketBlock> packetBlocks) {
+        this.name = name;
+        this.packetBlocks = packetBlocks;
+    }
 
     /**
-     * The enumeration for the ondemand handler type.
+     * Gets the name of the packet.
+     *
+     * @return  The name.
      */
-    ONDEMAND
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets if a packet contains a specific block.
+     *
+     * @param name  The name of the block to check for.
+     * @return      If this packet contains a specific block.
+     */
+    public boolean containsBlock(String name) {
+        return packetBlocks.containsKey(name);
+    }
+
+    /**
+     * Gets a block for this packet.
+     *
+     * @param name  The name of the block.
+     * @return      The block for the packet.
+     */
+    public PacketBlock getPacketBlock(String name) {
+        return packetBlocks.get(name);
+    }
 }

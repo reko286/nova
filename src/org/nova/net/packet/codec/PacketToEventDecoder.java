@@ -20,18 +20,15 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net;
+package org.nova.net.packet.codec;
+
+import org.nova.event.Event;
+import org.nova.net.packet.Packet;
+import org.nova.util.Decoder;
 
 /**
  * Created by Hadyn Richard
  */
-public abstract class ClientDomain {
+public abstract class PacketToEventDecoder implements Decoder<Event, Packet> {
 
-    /**
-     * Registers a client to this domain.
-     *
-     * @param client    The client to register.
-     * @return          If the client was successfully registered.
-     */
-    public abstract boolean register(Client client);
 }

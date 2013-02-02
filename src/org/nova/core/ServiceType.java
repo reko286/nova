@@ -20,13 +20,25 @@
  * THE SOFTWARE.
  */
 
-package org.nova.util;
+package org.nova.core;
 
 /**
- * Created by Trey
- * 
- * Bundles an encoder and decoder into one abstract implementation.
+ * Created by Hadyn Richard
  */
-public abstract class Codec<T, V> implements Encoder<T, V>, Decoder<T, V> {
+public enum ServiceType {
 
+    /**
+     * The enumeration for the gateway service type.
+     */
+    GATEWAY,
+
+    /**
+     * The enumeration for the game service type.
+     */
+    GAME,
+
+    /**
+     * The enumeration for the ondemand service type.
+     */
+    ONDEMAND
 }

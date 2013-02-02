@@ -22,15 +22,15 @@
 
 package org.nova.net;
 
+import org.nova.core.ServiceType;
 import org.nova.net.packet.codec.impl.PacketDecoderState;
+import org.nova.net.packet.codec.impl.PacketDecoderState.Stage;
 import org.nova.net.packet.codec.impl.PacketEncoderState;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Hadyn Richard
@@ -68,11 +68,6 @@ public final class Client {
     private ServiceType serviceType;
 
     /**
-     * The queue of incoming packets.
-     */
-    private Queue<Packet> incomingPackets;
-
-    /**
      * The list of disconnection listeners for the client.
      */
     private List<DisconnectListener> disconnectListeners;
@@ -87,10 +82,9 @@ public final class Client {
         inputBuffer = ByteBuffer.allocate(5000);
         outputBuffer = ByteBuffer.allocate(5000);
 
-        /* Set the buffer for the decoder state */
+        /* Initialize the decoder state */
         decoderState.setBuffer(inputBuffer);
-
-        incomingPackets = new ConcurrentLinkedQueue<Packet>();
+        decoderState.setStage(Stage.AWAITING_ID);
     }
 
     /**
@@ -139,15 +133,6 @@ public final class Client {
     }
 
     /**
-     * Adds a packet to the incoming packet queue.
-     *
-     * @param packet    The packet to add.
-     */
-    public void addIncomingPacket(Packet packet) {
-        incomingPackets.add(packet);
-    }
-
-    /**
      * Adds a disconnect listener to this client.
      *
      * @param listener  The listener to add.
@@ -169,8 +154,6 @@ public final class Client {
      * Disconnects the client.
      */
     public void disconnect() {
-
-        /* TODO: Figure out if we should close the socket before we alert the listeners */
 
         /* Alert the listeners that the client is being disconnected */
         for(DisconnectListener listeners : disconnectListeners) {

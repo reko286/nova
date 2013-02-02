@@ -22,15 +22,13 @@
 
 package org.nova.net.event.handler;
 
-import org.nova.event.Event;
 import org.nova.event.EventHandler;
+import org.nova.event.EventHandlerChain;
 import org.nova.event.EventHandlerChainContext;
-import org.nova.net.ServiceType;
 import org.nova.net.ISAACCipher;
-import org.nova.net.Packet;
-import org.nova.net.event.ClientInputEvent;
 import org.nova.net.event.PacketParsedEvent;
-import org.nova.net.packet.PacketFactory;
+import org.nova.net.packet.Packet;
+import org.nova.net.event.ClientInputEvent;
 import org.nova.net.packet.codec.impl.PacketDecoder;
 import org.nova.net.packet.codec.impl.PacketDecoderState;
 import org.nova.net.packet.codec.impl.PacketDecoderState.Stage;
@@ -40,7 +38,7 @@ import java.nio.ByteBuffer;
 /**
  * Created by Hadyn Richard
  */
-public final class IncomingPacketEventHandler extends EventHandler<ClientInputEvent> {
+public final class ClientInputEventHandler extends EventHandler<ClientInputEvent> {
 
     /**
      * The decoder to use in order to decode packets for this handler.
@@ -48,12 +46,19 @@ public final class IncomingPacketEventHandler extends EventHandler<ClientInputEv
     private PacketDecoder decoder;
 
     /**
-     * Constructs a new {@link IncomingPacketEventHandler};
-     *
-     * @param decoder       The decoder to use in order to decode packets.
+     * The event handler chain to propagate the packet parsed events down.
      */
-    public IncomingPacketEventHandler(PacketDecoder decoder) {
+    private EventHandlerChain<PacketParsedEvent> chain;
+
+    /**
+     * Constructs a new {@link ClientInputEventHandler};
+     *
+     * @param decoder   The decoder to use in order to decode packets.
+     * @param chain     The event handler chain to propagate the parsed packet events down.
+     */
+    public ClientInputEventHandler(PacketDecoder decoder, EventHandlerChain<PacketParsedEvent> chain) {
         this.decoder = decoder;
+        this.chain = chain;
     }
 
     @Override
@@ -89,13 +94,17 @@ public final class IncomingPacketEventHandler extends EventHandler<ClientInputEv
             }
 
             /* Set the id and that we are now awaiting bytes */
-            state.setPacketOpcode(id);
+            state.setDecoderId(id);
             state.setStage(Stage.AWAITING_BYTES);
         }
 
         /* Check if this is the correct handler for the packet to decode */
-        PacketFactory factory = decoder.getFactory();
-        if(factory.getDescriptor().getOpcode() != state.getPacketOpcode()) {
+        if(decoder.getId() != state.getDecoderId()) {
+            return;
+        }
+
+        /* Check to see if the type of service for the client is correct */
+        if(!event.getClient().getServiceType().equals(decoder.getServiceType())) {
             return;
         }
 
@@ -122,7 +131,8 @@ public final class IncomingPacketEventHandler extends EventHandler<ClientInputEv
         /* Tell the context to continue looping */
         event.getContext().setLoop(true);
 
-        /* Add the packet to the clients incoming packet queue */
-        event.getClient().addIncomingPacket(packet);
+        /* Create and propagate the packet event down the event handler chain */
+        PacketParsedEvent packetEvent = new PacketParsedEvent(event.getClient(), packet);
+        chain.createNewEventHandlerChainContext(packetEvent).doAll();
     }
 }

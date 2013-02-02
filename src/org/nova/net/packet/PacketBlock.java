@@ -20,23 +20,14 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net;
-
-import org.nova.net.packet.Transformer;
-import org.nova.util.Encoder;
+package org.nova.net.packet;
 
 import java.nio.ByteBuffer;
 
 /**
  * Created by Hadyn Richard
  *
- * Represents a variable in the packet.
- *
- * Notes:
- *
- *          Check for the compatibility of a transformer?
- *          Move value object lower and set to protected access or use getter?
- *              Subsequently wouldn't have to check for compatibility past this point because of generics.
+ * Represents a stateful variable block in a packet.
  */
 public abstract class PacketBlock<T> {
 
@@ -80,8 +71,8 @@ public abstract class PacketBlock<T> {
      *
      * @param transformer The transformer to use to encode the value of the block.
      */
-    public final void encodeValue(Transformer<T> transformer) {
-        value = transformer.encode(value);
+    public final void encodeValue(Transformer<T, PacketBlock<T>> transformer) {
+        value = transformer.encode(this);
     }
 
     /**
@@ -89,8 +80,8 @@ public abstract class PacketBlock<T> {
      *
      * @param transformer   The transformer to use to decode the value of the black.
      */
-    public final void decodeValue(Transformer<T> transformer) {
-        value = transformer.decode(value);
+    public final void decodeValue(Transformer<T, PacketBlock<T>> transformer) {
+        value = transformer.decode(this);
     }
 
     /**

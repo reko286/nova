@@ -29,8 +29,8 @@ public interface Decoder<T, V> {
     /**
      * Decodes a value from a input value.
      * 
-     * @param t The input value.
+     * @param v The input value.
      * @return  The output value.
      */
-    public V decode(T t);
+    public T decode(V v);
 }

@@ -22,8 +22,6 @@
 
 package org.nova.net.packet;
 
-import org.nova.net.PacketBlock;
-
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 

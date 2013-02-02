@@ -50,7 +50,7 @@ public final class EventHandlerChainContext<T extends Event> {
     /**
      * Constructs a new {@link EventHandlerChainContext};
      * 
-     * @param event     The event to handle in this context.
+     * @param event     The event to decorate in this context.
      * @param iterator  The event handler iterator.
      */
     public EventHandlerChainContext(T event, Iterator<EventHandler<T>> iterator) {
@@ -62,7 +62,7 @@ public final class EventHandlerChainContext<T extends Event> {
      * Checks to see if the state of this context is valid.
      */
     private void checkState() {
-        if(!iterator.hasNext() || stopped) {
+        if(!iterator.hasNext() && stopped) {
             throw new IllegalStateException();
         }   
     }
@@ -100,7 +100,7 @@ public final class EventHandlerChainContext<T extends Event> {
     public void doAll() {
         checkState();
         
-        while(iterator.hasNext() || !stopped) {
+        while(iterator.hasNext() && !stopped) {
             EventHandler<T> handler = iterator.next();
             handler.handle(event, this);
         }

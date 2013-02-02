@@ -24,7 +24,7 @@ package org.nova.net.event;
 
 import org.nova.event.Event;
 import org.nova.net.Client;
-import org.nova.net.Packet;
+import org.nova.net.packet.Packet;
 
 /**
  * Created by Hadyn Richard
@@ -50,6 +50,15 @@ public final class PacketParsedEvent extends Event {
     public PacketParsedEvent(Client client, Packet packet) {
         this.client = client;
         this.packet = packet;
+    }
+
+    /**
+     * Gets the client from which the packet came from.
+     *
+     * @return  The client.
+     */
+    public Client getClient() {
+        return client;
     }
 
     /**

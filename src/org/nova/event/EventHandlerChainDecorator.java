@@ -20,13 +20,17 @@
  * THE SOFTWARE.
  */
 
-package org.nova.util;
+package org.nova.event;
 
 /**
- * Created by Trey
- * 
- * Bundles an encoder and decoder into one abstract implementation.
+ * Created by Hadyn Richard
  */
-public abstract class Codec<T, V> implements Encoder<T, V>, Decoder<T, V> {
+public abstract class EventHandlerChainDecorator {
 
+    /**
+     * Decorates an event handler chain.
+     *
+     * @param chain The event handler chain to decorate.
+     */
+    public abstract void decorate(EventHandlerChain chain);
 }

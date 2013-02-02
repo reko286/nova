@@ -20,37 +20,48 @@
  * THE SOFTWARE.
  */
 
-package org.nova;
+package org.nova.test.util;
 
-import java.util.logging.Logger;
+import org.nova.util.xml.XMLNode;
+import org.nova.util.xml.XMLParser;
+
+import java.io.FileReader;
 
 /**
  * Created by Hadyn Richard
  */
-public final class Server {
+public final class XMLTest {
 
     /**
-     * The logger for this class.
-     */
-    private static final Logger logger = Logger.getLogger(Server.class.getName());
-
-    /**
-     * The command line arguments.
-     * 
+     * The main entry point of the test.
+     *
      * @param args  The command line arguments.
      */
     public static void main(String[] args) {
-        System.err.println("`7MN.   `7MF'                                                              \n" +
-                           "  MMN.    M                                                                \n" +
-                           "  M YMb   M  ,pW\"Wq.`7M'   `MF',6\"Yb.  Created by Hadyn Richard aka Sini \n" +
-                           "  M  `MN. M 6W'   `Wb VA   ,V 8)   MM  Thanks to: Trey, Runelocus, PRS06   \n" +
-                           "  M   `MM.M 8M     M8  VA ,V   ,pm9MM                                      \n" +
-                           "  M     YMM YA.   ,A9   VVV   8M   MM                                      \n" +
-                           ".JML.    YM  `Ybmd9'     W    `Moo9^Yo.                                    \n" +
-                           "-----------------------------------------------------------------------------");
-    
-        logger.info("Starting up...");
+        try {
 
-        logger.info("Finished loading!");
+            XMLParser parser = new XMLParser();
+
+            /* Parse the XML file */
+            XMLNode root =  parser.parse(new FileReader("./data/test/xml_test.xml"));
+
+            /* Get the first node and commence testing */
+            XMLNode first = root.getFirstChild("first");
+
+            /* Assert that the first node has an inner child */
+            assert(first.getFirstChild("inner") != null);
+
+            /* Get the attributed node and check if it has its attribute value */
+            XMLNode attributed = root.getFirstChild("attributed");
+
+            /* Assert that the attributed node contains the specified attribute */
+            assert(attributed.getAttribute("value") != null);
+
+            /* Assert that the attributed node attribute value, 'value' is 'i_like_turtles' */
+            assert(attributed.getAttribute("value").equals("i_like_turtles"));
+
+        } catch(Exception ex) {
+            System.out.println("Something went wrong: " + ex);
+        }
     }
 }

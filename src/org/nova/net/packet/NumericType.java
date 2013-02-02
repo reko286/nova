@@ -38,6 +38,11 @@ public enum NumericType {
     INT16,
 
     /**
+     * Representation for a medium integer value.
+     */
+    INT24,
+
+    /**
      * Representation for an integer value.
      */
     INT32,
@@ -61,6 +66,9 @@ public enum NumericType {
 
             case INT16:
                 return 2;
+
+            case INT24:
+                return 3;
 
             case INT32:
                 return 4;

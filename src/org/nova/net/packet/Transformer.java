@@ -23,12 +23,12 @@
 package org.nova.net.packet;
 
 import org.nova.util.Codec;
+import org.nova.util.Decoder;
+import org.nova.util.Encoder;
 
 /**
  * Created by Hadyn Richard
- *
- * Just an explicit declaration of a reflexive encoder.
  */
-public abstract class Transformer<T> extends Codec<T, T> {
+public abstract class Transformer<T, V extends PacketBlock<T>> extends Codec<T, V> {
 
 }

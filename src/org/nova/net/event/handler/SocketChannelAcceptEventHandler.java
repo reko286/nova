@@ -26,7 +26,7 @@ import org.nova.event.EventHandler;
 import org.nova.event.EventHandlerChainContext;
 import org.nova.net.Client;
 import org.nova.net.ClientPool;
-import org.nova.net.ServiceType;
+import org.nova.core.ServiceType;
 import org.nova.net.event.SocketChannelEvent;
 
 import java.nio.channels.ClosedChannelException;
@@ -67,8 +67,8 @@ public final class SocketChannelAcceptEventHandler extends EventHandler<SocketCh
         SelectionKey key = null;
         try {
             SocketChannel channel = event.getSocketChannel();
-            channel.register(event.getSelector(), SelectionKey.OP_READ);
-        } catch (ClosedChannelException e) {
+            key = channel.register(event.getSelector(), SelectionKey.OP_READ);
+        } catch (Throwable t) {
 
             /* For some reason the channel was closed and we should return */
             return;

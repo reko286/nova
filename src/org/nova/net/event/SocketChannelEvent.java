@@ -85,6 +85,7 @@ public final class SocketChannelEvent extends Event {
     public SocketChannelEvent(SocketChannel socketChannel, Selector selector, SelectionKey selectionKey, SocketInterest interest) {
         this.socketChannel = socketChannel;
         this.selector = selector;
+        this.selectionKey = selectionKey;
         this.interest = interest;
     }
 

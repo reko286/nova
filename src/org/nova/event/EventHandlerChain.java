@@ -28,7 +28,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 /**
- * Evelus Development
  * Created by Hadyn Richard
  */
 public final class EventHandlerChain<T extends Event> {

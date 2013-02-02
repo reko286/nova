@@ -22,8 +22,6 @@
 
 package org.nova.net.packet;
 
-import org.nova.net.PacketBlock;
-
 import java.nio.ByteBuffer;
 
 /**
@@ -104,6 +102,15 @@ public final class NumericBlock extends PacketBlock<Number> {
                 value = buffer.getLong();
                 break;
         }
+    }
+
+    /**
+     * Gets the numeric type for this block.
+     *
+     * @return  The numeric type.
+     */
+    public NumericType getType() {
+        return type;
     }
 
     @Override

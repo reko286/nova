@@ -19,11 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.nova.net;
-
-import org.nova.net.packet.NumericBlock;
-import org.nova.net.packet.NumericType;
-import org.nova.net.packet.StringBlock;
+package org.nova.net.packet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,10 +32,10 @@ import java.util.Map;
 public final class PacketBuilder {
 
     /**
-     * The descriptor for the packet we are building.
+     * The name of the packet to build.
      */
-    private PacketDescriptor descriptor;
-    
+    private String name;
+
     /**
      * The packet blocks for the packet we are building.
      */
@@ -47,32 +43,12 @@ public final class PacketBuilder {
 
     /**
      * Constructs a new {@link PacketBuilder};
-     * The default for the packet size is STATIC.
-     *
-     * @param opcode The opcode of the packet.
+     * 
+     * @param name  The name of the packet to build.
      */
-    public PacketBuilder(int opcode) {
-        this(opcode, PacketSize.STATIC);
-    }
+    public PacketBuilder(String name) {
+        this.name = name;
 
-    /**
-     * Constructs a new {@link PacketBuilder};
-     *
-     * @param opcode The packet opcode.
-     * @param size The packet size.
-     */
-    public PacketBuilder(int opcode, PacketSize size) {
-        this(new PacketDescriptor(opcode, size));
-    }
-
-    /**
-     * Constructs a new {@link PacketBuilder};
-     *
-     * @param descriptor    The packet descriptor.
-     */
-    public PacketBuilder(PacketDescriptor descriptor) {
-        this.descriptor = descriptor;
-        
         blocks = new HashMap<String, PacketBlock>();
     }
 
@@ -122,6 +98,30 @@ public final class PacketBuilder {
      */
     public PacketBuilder putInt16(String name, short s) {
         NumericBlock block = new NumericBlock(s, NumericType.INT16);
+        blocks.put(name, block);
+        return this;
+    }
+
+    /**
+     * Puts a numeric medium integer block into the packet.
+     *
+     * @param name  The name of the block to put.
+     * @return      This instance of the packet builder, for chaining.
+     */
+    public PacketBuilder putInt24(String name) {
+        NumericBlock block = new NumericBlock(NumericType.INT24);
+        blocks.put(name, block);
+        return this;
+    }
+
+    /**
+     * Puts a numeric medium integer block into the packet.
+     *
+     * @param name  The name of the block to put.
+     * @return      This instance of the packet builder, for chaining.
+     */
+    public PacketBuilder putInt24(String name, int i) {
+        NumericBlock block = new NumericBlock(i, NumericType.INT24);
         blocks.put(name, block);
         return this;
     }
@@ -207,6 +207,6 @@ public final class PacketBuilder {
      * @return The created packet.
      */
     public Packet toPacket() {
-        return new Packet(descriptor, blocks);
+        return new Packet(name, blocks);
     }
 }

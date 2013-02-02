@@ -22,7 +22,9 @@
 
 package org.nova.net.packet.impl;
 
+import org.nova.net.packet.NumericBlock;
 import org.nova.net.packet.NumericType;
+import org.nova.net.packet.PacketBlock;
 import org.nova.net.packet.Transformer;
 
 import java.nio.ByteBuffer;
@@ -35,14 +37,8 @@ import static org.nova.net.packet.NumericType.*;
 
 /**
  * Created by Hadyn Richard
- *
- * Note:
- *
- *          It is possible that the block type doesn't match the transformer type and bytes will be
- *          truncated if that is the case.
- *          Add a check to the packet block to check if the transformer is compatible?
  */
-public final class NumericTransformer extends Transformer<Number> {
+public final class NumericTransformer extends Transformer<Number, NumericBlock> {
 
     /**
      * The enumeration for each of the translations.
@@ -97,11 +93,6 @@ public final class NumericTransformer extends Transformer<Number> {
     }
 
     /**
-     * The type of numeric value to treat the value to encode as.
-     */
-    private NumericType type;
-
-    /**
      * The translation to use to use to encode the value with.
      */
     private Translation translation;
@@ -113,49 +104,31 @@ public final class NumericTransformer extends Transformer<Number> {
 
     /**
      * Constructs a new {@link NumericTransformer};
-     * The default translation and byte order is NONE and BIG endian.
      *
-     * @param type          The numeric type to treat the values to encode and decode as.
-     */
-    public NumericTransformer(NumericType type) {
-        this(type, NONE, BIG);
-    }
-
-    /**
-     * Constructs a new {@link NumericTransformer};
-     * The default byte order is BIG endian.
-     *
-     * @param type          The numeric type to treat the values to encode and decode as.
-     * @param translation   The translation to use with the LSB of the values to encode and decode.
-     */
-    public NumericTransformer(NumericType type, Translation translation) {
-        this(type, translation, BIG);
-    }
-
-    /**
-     * Constructs a new {@link NumericTransformer};
-     *
-     * @param type          The numeric type to treat the values to encode and decode as.
      * @param translation   The translation to use with the LSB of the values to encode and decode.
      * @param order         The byte order of the values to encode and decode.
      */
-    public NumericTransformer(NumericType type, Translation translation, ByteOrder order) {
-        this.type = type;
+    public NumericTransformer(Translation translation, ByteOrder order) {
         this.translation = translation;
         this.order = order;
 
-        checkState();
-    }
-
-    /**
-     * Check the state to assure that the provided variables are valid.
-     */
-    private void checkState() {
+        /* Check if the translation was provided */
+        if(translation == null) {
+            throw new IllegalStateException("translation cannot be null");
+        }
 
         /* Check if the byte order was provided */
         if(order == null) {
-            throw new IllegalStateException("Order cannot be null");
+            throw new IllegalStateException("order cannot be null");
         }
+    }
+
+    /**
+     * Check the state to assure that the provided type is compatible.
+     *
+     * @param type  The given type to encode.
+     */
+    private void checkState(NumericType type) {
 
         /* Check to assure that if the order is middle that the numeric type is an integer */
         if(order == MIDDLE || order == INVERSE_MIDDLE) {
@@ -166,7 +139,13 @@ public final class NumericTransformer extends Transformer<Number> {
     }
 
     @Override
-    public Number encode(Number input) {
+    public Number encode(NumericBlock block) {
+        
+        Number input = block.getValue();
+        NumericType type = block.getType();
+
+        checkState(type);
+        
         int byteLength = NumericType.getByteLength(type);
         ByteBuffer buffer = ByteBuffer.allocate(byteLength);
 
@@ -179,6 +158,11 @@ public final class NumericTransformer extends Transformer<Number> {
 
             case INT16:
                 buffer.putShort(input.shortValue());
+                break;
+            
+            case INT24:
+                buffer.putShort((short) (input.intValue() >> 8));
+                buffer.put(input.byteValue());
                 break;
 
             case INT32:
@@ -240,6 +224,10 @@ public final class NumericTransformer extends Transformer<Number> {
                 newNumber = buffer.getShort();
                 break;
 
+            case INT24:
+                newNumber = buffer.getShort() << 8 | buffer.get();
+                break;
+
             case INT32:
                 newNumber = buffer.getInt();
                 break;
@@ -254,7 +242,11 @@ public final class NumericTransformer extends Transformer<Number> {
 
 
     @Override
-    public Number decode(Number input) {
+    public Number decode(NumericBlock block) {
+
+        Number input = block.getValue();
+        NumericType type = block.getType();
+
         int byteLength = NumericType.getByteLength(type);
         ByteBuffer buffer = ByteBuffer.allocate(byteLength);
 
@@ -267,6 +259,11 @@ public final class NumericTransformer extends Transformer<Number> {
 
             case INT16:
                 buffer.putShort(input.shortValue());
+                break;
+
+            case INT24:
+                buffer.putShort((short) (input.intValue() >> 8));
+                buffer.put(input.byteValue());
                 break;
 
             case INT32:
@@ -318,6 +315,10 @@ public final class NumericTransformer extends Transformer<Number> {
 
             case INT16:
                 newNumber = buffer.getShort();
+                break;
+
+            case INT24:
+                newNumber = buffer.getShort() << 8 | buffer.get();
                 break;
 
             case INT32:

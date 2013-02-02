@@ -23,56 +23,56 @@
 package org.nova.core;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
- * Runelocus Development
  * Created by Hadyn Richard
  */
 public final class ServiceManager {
-    
+
     /**
      * The services registered to this service manager.
      */
-    private Map<String, Service> services;
+    private Map<ServiceType, Service> services;
     
     /**
      * Constructs a new {@link ServiceManager};
      */
     public ServiceManager() {
-        services = new HashMap<String, Service>();
+        services = new HashMap<ServiceType, Service>();
     }
-    
+
     /**
      * Registers a service to this service manager.
      * 
-     * @param name          The name of the service.
+     * @param type          The type of the service.
      * @param service       The service to register.
      * @return              The previously registered service for the specified
      *                      descriptor if there was one.
      */
-    public Service register(String name, Service service) {
-        return services.put(name, service);
+    public Service register(ServiceType type, Service service) {
+        return services.put(type, service);
     }
 
     /**
      * Unregisters a service from this service manager.
      *
-     * @param name  The name of the service to unregister.
+     * @param type  The type of the service to unregister.
      * @return      The unregistered service for the descriptor.
      */
-    public Service unregister(String name) {
-        return services.remove(name);
+    public Service unregister(ServiceType type) {
+        return services.remove(type);
     }
     
     /**
      * Gets a service from its registered name.
      * 
-     * @param name      The name of the service.
+     * @param type      The name of the service.
      * @return          The service.
      */
-    public Service get(String name) {
-        return services.get(name);
+    public Service get(ServiceType type) {
+        return services.get(type);
     }
 }
