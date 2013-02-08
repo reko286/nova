@@ -52,11 +52,6 @@ public final class Reactor extends Dispatcher {
     }
 
     @Override
-    public void handleEvent(Event event) {
-        getHandlerChainFor(event).createNewEventHandlerChainContext(event).doAll();
-    }
-
-    @Override
     public void dispatchEvents(ExecutorService executor) {
         try {
             selector.select();
@@ -105,5 +100,11 @@ public final class Reactor extends Dispatcher {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /** Just handle the event immediately */
+    @Override
+    public void handleEvent(Event event) {
+        getHandlerChainFor(event).createNewEventHandlerChainContext(event).doAll();
     }
 }

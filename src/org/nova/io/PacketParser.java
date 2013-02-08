@@ -53,7 +53,7 @@ public final class PacketParser {
     /**
      * Constructs a new {@link PacketParser};
      *
-     * @param is    The input stream to decode the packet meta data from.
+     * @param is    The input stream to parse the packets from.
      */
     public PacketParser(InputStream is) throws SAXException {
         this.is = is;

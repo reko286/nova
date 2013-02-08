@@ -1,0 +1,1 @@
+puts "Hello from the script you just compiled!"

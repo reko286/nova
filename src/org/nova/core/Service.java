@@ -59,6 +59,15 @@ public abstract class Service {
     }
 
     /**
+     * Gets the dispatcher for this service.
+     *
+     * @return  The dispatcher.
+     */
+    public Dispatcher getDispatcher() {
+        return dispatcher;
+    }
+
+    /**
      * Gets if the service is running.
      * 
      * @return  If the service is running.

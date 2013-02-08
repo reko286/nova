@@ -54,7 +54,7 @@ public final class PacketDecoderParser {
     /**
      * Constructs a new {@link PacketParser};
      *
-     * @param is    The input stream to decode the packet decoders from.
+     * @param is    The input stream to parse the packet decoders from.
      */
     public PacketDecoderParser(InputStream is) throws SAXException {
         this.is = is;

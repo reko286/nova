@@ -22,17 +22,24 @@
 
 package org.nova.net.event.handler;
 
+import org.nova.core.Service;
+import org.nova.core.ServiceManager;
 import org.nova.event.Event;
 import org.nova.event.EventHandler;
 import org.nova.event.EventHandlerChainContext;
 import org.nova.net.event.PacketParsedEvent;
 import org.nova.net.packet.Packet;
-import org.nova.net.packet.codec.PacketToEventDecoder;
+import org.nova.net.packet.codec.PacketEventDecoder;
 
 /**
  * Created by Hadyn Richard
  */
 public final class PacketParsedEventHandler extends EventHandler<PacketParsedEvent> {
+
+    /**
+     * The service manager for this handler.
+     */
+    private ServiceManager serviceManager;
 
     /**
      * The name of the packet to decorate for.
@@ -42,12 +49,17 @@ public final class PacketParsedEventHandler extends EventHandler<PacketParsedEve
     /**
      * The decoder to use to decode the packet into an event.
      */
-    private PacketToEventDecoder decoder;
+    private PacketEventDecoder decoder;
 
     /**
      * Constructs a new {@link PacketParsedEventHandler};
+     *
+     * @param serviceManager    The service manager for this handler.
+     * @param packetName        The name of the packet to handle.
+     * @param decoder           The packet to event decoder for this handler.
      */
-    public PacketParsedEventHandler(String packetName, PacketToEventDecoder decoder) {
+    public PacketParsedEventHandler(ServiceManager serviceManager, String packetName, PacketEventDecoder decoder) {
+        this.serviceManager = serviceManager;
         this.packetName = packetName;
         this.decoder = decoder;
     }
@@ -66,7 +78,7 @@ public final class PacketParsedEventHandler extends EventHandler<PacketParsedEve
         context.stop();
         
         /* Decode the event from the provided packet */
-        Event decodedEvent = decoder.decode(packet);
+        Event decodedEvent = decoder.decode(event);
 
         /* Do not go any further if the decoded event is null */
         if(decodedEvent == null) {
@@ -74,10 +86,9 @@ public final class PacketParsedEventHandler extends EventHandler<PacketParsedEve
         }
 
         /* Get the service that the client is currently being handled by */
-        //ServiceManager serviceManager = serverContext.getServiceManager();
-        //Service service = serviceManager.get(event.getClient().getServiceType());
+        Service service = serviceManager.get(event.getClient().getServiceType());
 
         /* Dispatch the decoded event */
-        //service.dispatchEvent(decodedEvent);
+        service.getDispatcher().handleEvent(decodedEvent);
     }
 }

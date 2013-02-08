@@ -155,6 +155,15 @@ public final class XMLNode {
     }
 
     /**
+     * Gets the children for this node.
+     *
+     * @return  The child nodes.
+     */
+    public List<XMLNode> getChildren() {
+        return children;
+    }
+
+    /**
      * Adds an attribute to the attributes map.
      *
      * @param name  The name of the attribute.

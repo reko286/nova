@@ -22,6 +22,12 @@
 
 package org.nova;
 
+import org.nova.io.ConfigurationParser;
+import org.xml.sax.SAXException;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -39,11 +45,18 @@ public final class Server {
      * 
      * @param args  The command line arguments.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception { // TODO: Better exception handling
+
+        /* Check if the arguments are correct */
+        if(args.length < 1) {
+            System.err.println("Usage: mode");
+            System.exit(0);
+        }
+        
         System.err.println("`7MN.   `7MF'                                                              \n" +
                            "  MMN.    M                                                                \n" +
                            "  M YMb   M  ,pW\"Wq.`7M'   `MF',6\"Yb.  Created by Hadyn Richard aka Sini \n" +
-                           "  M  `MN. M 6W'   `Wb VA   ,V 8)   MM  Thanks to: Trey, Runelocus, PRS06   \n" +
+                           "  M  `MN. M 6W'   `Wb VA   ,V 8)   MM  Thanks to: Trey                     \n" +
                            "  M   `MM.M 8M     M8  VA ,V   ,pm9MM                                      \n" +
                            "  M     YMM YA.   ,A9   VVV   8M   MM                                      \n" +
                            ".JML.    YM  `Ybmd9'     W    `Moo9^Yo.                                    \n" +
@@ -51,6 +64,35 @@ public final class Server {
     
         logger.info("Starting up...");
 
+        /* Get the server mode from the arguments */
+        ServerMode serverMode = ServerMode.valueOf(args[0].toUpperCase());
+        if(serverMode == null) {
+            throw new RuntimeException("invalid server mode");
+        }
+        
+        Server server = new Server();
+        server.init(serverMode);
+
         logger.info("Finished loading!");
+    }
+
+    /**
+     * Constructs a new {@link Server};
+     */
+    private Server() {}
+
+    /**
+     * Initializes the server.
+     *
+     * @param mode  The server mode to initialize with.
+     */
+    private void init(ServerMode mode) throws IOException, SAXException {
+
+        logger.info("Initializing the server...");
+
+        /* Parse the server configuration */
+        logger.info("Parsing the server configurations...");
+        ConfigurationParser configurationParser = new ConfigurationParser(new FileInputStream("./data/config.xml"));
+        Map<ServerMode, Configuration> configurations = configurationParser.parse();
     }
 }

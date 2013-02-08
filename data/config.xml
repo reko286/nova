@@ -1,0 +1,23 @@
+<!--
+		The server configuration file 
+-->
+<config>
+
+	<global>
+
+		<script>
+			<name>bootstrap</name>
+			<source>bootstrap.rb</source>
+		</script>
+
+		<script>
+			<name>event_decoders</name>
+			<source>event_decoders.rb</source>
+		</script>
+	</global>
+	
+	<live>
+		<worldid>1</worldid>
+		<baseport>40000</baseport>
+	</live>
+</config>

@@ -86,7 +86,10 @@ public final class XMLParser extends DefaultHandler {
     
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        
+
+        /* Always set the qualified name to lower case */
+        qName = qName.toLowerCase();
+
         /* Check if the root node has been created yet */
         if(rootNode == null) {
             currentNode = rootNode = new XMLNode(qName);
