@@ -20,33 +20,11 @@
  * THE SOFTWARE.
  */
 
-package org.nova.event;
+package org.nova.net;
 
 /**
  * Created by Hadyn Richard
  */
-public abstract class Event<T> {
+public abstract class Message {
 
-    /**
-     * Constructs a new {@link Event};
-     *
-     * @param source    The source of the event.
-     */
-    protected Event(T source) {
-        this.source = source;
-    }
-
-    /**
-     * The source of the event.
-     */
-    private T source;
-
-    /**
-     * Gets the source of the event.
-     *
-     * @return  The source.
-     */
-    public T getSource() {
-        return source;
-    }
 }

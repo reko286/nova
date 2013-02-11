@@ -22,52 +22,48 @@
 
 package org.nova.util.meta;
 
-import org.nova.core.ServiceType;
-import org.nova.net.packet.Transformer;
 import org.nova.net.packet.codec.PacketDecoder;
-
-import java.util.LinkedList;
-import java.util.List;
+import org.nova.net.packet.codec.PacketEncoder;
 
 /**
  * Created by Hadyn Richard
  */
-public final class PacketDecoderData extends PacketCodecData<PacketDecoder> {
+public class PacketEncoderData extends PacketCodecData<PacketEncoder> {
 
     /**
      * Constructs a new {@link PacketDecoderData};
      *
-     * @param id            The id associated with the decoder.
-     * @param packet        The name of the packet associated with the decoder.
+     * @param id            The id associated with the encoder.
+     * @param packetName    The name of the packet associated with the encoder.
      */
-    public PacketDecoderData(int id, String packet) {
-        super(id, packet);
+    public PacketEncoderData(int id, String packetName) {
+        super(id, packetName);
     }
 
-    /**
-     * Creates a new packet decoder from the packet codec information.
-     *
-     * @param packetData    The packet data to use to create the decoder with.
-     * @return              The created packet decoder.
-     */
-    public PacketDecoder create(PacketData packetData) {
 
-        /* Create the packet decoder */
-        PacketDecoder decoder = new PacketDecoder(id, packetData);
+    /**
+     * Creates a new packet encoder from the packet codec information.
+     * 
+     * @return  The created packet encoder.
+     */
+    public PacketEncoder create() {
+
+        /* Create the packet encoder */
+        PacketEncoder encoder = new PacketEncoder(packetName, id);
 
         for(Block block : blocks) {
 
             /* Add the block to the decoder */
-            decoder.addBlock(block.name);
+            encoder.addBlock(block.name);
 
             /* Check if a transformer needs to be used */
             if(block.useTransformer) {
 
                 /* Add the transformer to the decoder */
-                decoder.addTransformer(block.name, block.transformer);
+                encoder.addTransformer(block.name, block.transformer);
             }
         }
 
-        return decoder;
+        return encoder;
     }
 }

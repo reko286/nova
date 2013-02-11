@@ -22,10 +22,30 @@
 
 package org.nova.util.script.context;
 
+import org.nova.event.EventHandlerChainDecorator;
 import org.nova.util.script.EnvironmentContext;
 
 /**
  * Created by Hadyn Richard
  */
 public final class GameEnvironmentContext extends EnvironmentContext {
+
+    /**
+     * The packet decoder event handler chain decorator.
+     */
+    private EventHandlerChainDecorator packetDecoderChainDecorator;
+
+    /**
+     * Constructs a new {@link GameEnvironmentContext};
+     */
+    public GameEnvironmentContext() {}
+
+    /**
+     * Sets the packet decoder event handler chain decorator.
+     *
+     * @param decorator The event handler chain decorator.
+     */
+    public void setPacketDecoderChainDecorator(EventHandlerChainDecorator decorator) {
+        packetDecoderChainDecorator = decorator;
+    }
 }

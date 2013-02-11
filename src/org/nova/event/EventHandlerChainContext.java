@@ -28,7 +28,7 @@ import java.util.Iterator;
  * Evelus Development
  * Created by Hadyn Richard
  * 
- * Used to help propagate an event down a event handler chain. 
+ * Used to help propagate an event down a event handler chain.
  */
 public final class EventHandlerChainContext<T extends Event> {
     

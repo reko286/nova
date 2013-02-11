@@ -22,15 +22,20 @@
 
 package org.nova.net.event.handler;
 
+import org.nova.core.Service;
+import org.nova.core.ServiceManager;
 import org.nova.event.Event;
 import org.nova.event.EventHandler;
-import org.nova.event.EventHandlerChain;
 import org.nova.event.EventHandlerChainContext;
 import org.nova.net.Client;
-import org.nova.net.ClientInputContext;
 import org.nova.net.ClientPool;
-import org.nova.net.event.ClientInputEvent;
+import org.nova.net.ISAACCipher;
+import org.nova.net.Message;
+import org.nova.net.event.MessageDecodedEvent;
 import org.nova.net.event.SocketChannelEvent;
+import org.nova.net.packet.Packet;
+import org.nova.net.packet.codec.PacketDecoderState;
+import org.nova.net.packet.codec.PacketDecoderState.Stage;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -47,19 +52,19 @@ public final class SocketChannelReadEventHandler extends EventHandler<SocketChan
     private ClientPool clientPool;
 
     /**
-     * The chain to propagate the event for the bytes being read down to.
+     * The service manager for this handler.
      */
-    private EventHandlerChain chain;
+    private ServiceManager serviceManager;
 
     /**
      * Constructs a new {@link SocketChannelReadEventHandler};
      *
-     * @param clientPool    The client pool to grab clients from.
+     * @param clientPool        The client pool to grab clients from.
+     * @param serviceManager    The service manager for this handler.
      */
-    public SocketChannelReadEventHandler(ClientPool clientPool) {
+    public SocketChannelReadEventHandler(ClientPool clientPool, ServiceManager serviceManager) {
         this.clientPool = clientPool;
-
-        this.chain = new EventHandlerChain<ClientInputEvent>();
+        this.serviceManager = serviceManager;
     }
 
     @Override
@@ -80,7 +85,7 @@ public final class SocketChannelReadEventHandler extends EventHandler<SocketChan
         
         /* Read the bytes from the socket channel to the client input buffer */
         try {
-            SocketChannel channel = event.getSocketChannel();
+            SocketChannel channel = event.getSource();
 
             /* Read to the input buffer and rewind it afterward */
             ByteBuffer buffer = client.getInputBuffer();
@@ -93,21 +98,63 @@ public final class SocketChannelReadEventHandler extends EventHandler<SocketChan
             return;
         }
 
-        ClientInputContext inputContext = new ClientInputContext();
+        for(;;) {
 
-        do {
-            /* Create the input event and propagate it down the chain */
-            Event inputEvent = new ClientInputEvent(client, inputContext);
-            chain.createNewEventHandlerChainContext(inputEvent).doAll();
-        } while(inputContext.getLoop());
-    }
+            /* Check if the packet id needs to be determined */
+            PacketDecoderState state = client.getDecoderState();
+            if(state.getStage().equals(PacketDecoderState.Stage.AWAITING_ID)) {
 
-    /**
-     * Gets the event handler chain for this handler.
-     *
-     * @return  The chain.
-     */
-    public EventHandlerChain<ClientInputEvent> getChain() {
-        return chain;
+                /* Check if we can parse the packet id from the buffer */
+                ByteBuffer buffer = state.getBuffer();
+                if(buffer.remaining() < 1) {
+                    break;
+                }
+
+                int id = buffer.get() & 0xFF;
+
+                /* Check if the id needs to be deciphered */
+                if(state.useCipher()) {
+
+                    ISAACCipher cipher = state.getCipher();
+                    if(cipher == null) {
+                        throw new IllegalStateException("cipher cannot be null");
+                    }
+
+                    id = id - cipher.getNextValue() & 0xFF;
+                }
+
+                /* Set the id and that we are now awaiting bytes */
+                state.setDecoderId(id);
+                state.setStage(PacketDecoderState.Stage.AWAITING_BYTES);
+            }
+
+            /* Decode the packet and check if it successfully decoded */
+            Packet packet = client.getPacketHandler().decode(state);
+            if(packet == null) {
+                break;
+            }
+
+            /* Get the buffer that was used to parse the packet and compact, and rewind it */
+            ByteBuffer buffer = state.getBuffer();
+            buffer.compact().rewind();
+
+            /* Alert that we are now awaiting for an id again */
+            state.setStage(Stage.AWAITING_ID);
+
+            /* Decode the message from the provided packet */
+            Message decodedMessage = client.getMessageHandler().decode(packet);
+
+            /* Do not go any further if the decoded message is null */
+            if(decodedMessage == null) {
+                return;
+            }
+
+            /* Get the service that the client is currently being handled by */
+            Service service = serviceManager.get(client.getServiceType());
+
+            /* Dispatch the message event */
+            Event messageEvent = new MessageDecodedEvent(client, decodedMessage);
+            service.getDispatcher().handleEvent(messageEvent);
+        }
     }
 }

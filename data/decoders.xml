@@ -7,7 +7,6 @@
 <decoders>
 
 	<decoder>
-		<service>GATEWAY</service>
 
 		<packet>ondemand_handshake</packet>
 
@@ -22,7 +21,6 @@
 	</decoder>
 
 	<decoder>
-		<service>ONDEMAND</service>
 
 		<packet>archive_request</packet>
 
@@ -41,7 +39,6 @@
 	</decoder>
 
 	<decoder>
-		<service>ONDEMAND</service>
 
 		<packet>archive_request</packet>
 

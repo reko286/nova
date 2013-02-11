@@ -36,25 +36,39 @@ import java.util.Map;
 public final class ClientPool {
 
     /**
+     * The factory to create new clients with.
+     */
+    private ClientFactory factory;
+
+    /**
      * The map of clients.
      */
     private Map<SelectionKey, Client> clients;
 
     /**
      * Constructs a new {@link ClientPool};
+     *
+     * @param factory   The client factory to create clients with.
      */
-    public ClientPool() {
+    public ClientPool(ClientFactory factory) {
         clients = new HashMap<SelectionKey, Client>();
+
+        this.factory = factory;
     }
 
     /**
-     * Registers a client to a specified selection key.
+     * Creates a client and registers to this client pool.
      *
-     * @param client    The client to register.
-     * @param key       The
+     * @param key   The selection key to create the client with.
+     * @return      The created client.
      */
-    public void register(Client client, SelectionKey key) {
-        clients.put(key, client);
+    public Client create(SelectionKey key) {
+
+        /* Create and register the client */
+        Client createdClient = factory.create(key);
+        clients.put(key, createdClient);
+
+        return createdClient;
     }
 
     /**

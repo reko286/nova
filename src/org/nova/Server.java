@@ -23,8 +23,12 @@
 package org.nova;
 
 import org.nova.io.ConfigurationParser;
+import org.nova.util.script.Script;
+import org.nova.util.script.ScriptEnvironment;
+import org.nova.util.script.context.GameEnvironmentContext;
 import org.xml.sax.SAXException;
 
+import javax.script.ScriptException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -77,6 +81,11 @@ public final class Server {
     }
 
     /**
+     * The server configuration.
+     */
+    private Configuration configuration;
+
+    /**
      * Constructs a new {@link Server};
      */
     private Server() {}
@@ -86,7 +95,7 @@ public final class Server {
      *
      * @param mode  The server mode to initialize with.
      */
-    private void init(ServerMode mode) throws IOException, SAXException {
+    private void init(ServerMode mode) throws IOException, SAXException, ScriptException {
 
         logger.info("Initializing the server...");
 
@@ -94,5 +103,19 @@ public final class Server {
         logger.info("Parsing the server configurations...");
         ConfigurationParser configurationParser = new ConfigurationParser(new FileInputStream("./data/config.xml"));
         Map<ServerMode, Configuration> configurations = configurationParser.parse();
+
+        /* Get the configuration for the mode and check if it is valid */
+        configuration = configurations.get(mode);
+        if(configuration == null) {
+            throw new RuntimeException("EEK! no such configuration for server mode");
+        }
+
+        GameEnvironmentContext environmentContext = new GameEnvironmentContext();
+        ScriptEnvironment scriptEnvironment = new ScriptEnvironment("jruby", environmentContext);
+
+        logger.info("Evaluating each of the startup scripts...");
+        for(Script script : configuration.getScripts()) {
+            scriptEnvironment.eval(script);
+        }
     }
 }

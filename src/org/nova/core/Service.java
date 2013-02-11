@@ -21,8 +21,6 @@
  */
 package org.nova.core;
 
-import org.nova.event.Event;
-
 import java.util.concurrent.ExecutorService;
 
 /**

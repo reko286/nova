@@ -20,33 +20,40 @@
  * THE SOFTWARE.
  */
 
-package org.nova.event;
+package org.nova.net.packet.codec;
+
+import org.nova.net.packet.Packet;
 
 /**
  * Created by Hadyn Richard
  */
-public abstract class Event<T> {
+public final class PacketEncoderState extends PacketCodecState {
 
     /**
-     * Constructs a new {@link Event};
-     *
-     * @param source    The source of the event.
+     * The packet to be encoded.
      */
-    protected Event(T source) {
-        this.source = source;
+    private Packet packet;
+
+    /**
+     * Constructs a new {@link PacketEncoderState};
+     */
+    public PacketEncoderState() {}
+
+    /**
+     * Sets the packet to be encoded.
+     *
+     * @param packet    The packet to be encoded.
+     */
+    public void setPacket(Packet packet) {
+        this.packet = packet;
     }
 
     /**
-     * The source of the event.
-     */
-    private T source;
-
-    /**
-     * Gets the source of the event.
+     * Gets the packet to be encoded.
      *
-     * @return  The source.
+     * @return  The packet to be encoded.
      */
-    public T getSource() {
-        return source;
+    public Packet getPacket() {
+        return packet;
     }
 }

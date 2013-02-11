@@ -20,41 +20,15 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.packet.codec.impl;
+package org.nova.net.packet.codec;
 
+import org.nova.net.Message;
 import org.nova.net.packet.Packet;
-import org.nova.net.packet.codec.PacketCodecState;
+import org.nova.util.Decoder;
 
 /**
  * Created by Hadyn Richard
  */
-public final class PacketEncoderState extends PacketCodecState {
+public abstract class MessageDecoder implements Decoder<Message, Packet> {
 
-    /**
-     * The packet to be encoded.
-     */
-    private Packet packet;
-
-    /**
-     * Constructs a new {@link PacketEncoderState};
-     */
-    public PacketEncoderState() {}
-
-    /**
-     * Sets the packet to be encoded.
-     *
-     * @param packet    The packet to be encoded.
-     */
-    public void setPacket(Packet packet) {
-        this.packet = packet;
-    }
-
-    /**
-     * Gets the packet to be encoded.
-     *
-     * @return  The packet to be encoded.
-     */
-    public Packet getPacket() {
-        return packet;
-    }
 }

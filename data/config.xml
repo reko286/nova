@@ -1,5 +1,7 @@
 <!--
-		The server configuration file 
+		Notes:
+
+				- Scripts will be evaluated in order of their declaration!
 -->
 <config>
 
@@ -11,8 +13,8 @@
 		</script>
 
 		<script>
-			<name>event_decoders</name>
-			<source>event_decoders.rb</source>
+			<name>packet_decoders</name>
+			<source>packet_decoders.rb</source>
 		</script>
 	</global>
 	

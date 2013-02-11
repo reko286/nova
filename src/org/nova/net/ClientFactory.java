@@ -20,53 +20,20 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.event;
+package org.nova.net;
 
-import org.nova.event.Event;
-import org.nova.net.Client;
-import org.nova.net.ClientInputContext;
+import java.nio.channels.SelectionKey;
 
 /**
  * Created by Hadyn Richard
  */
-public final class ClientInputEvent extends Event {
+public abstract class ClientFactory {
 
     /**
-     * The client from which input was received.
-     */
-    private Client client;
-
-    /**
-     * The context from which the event was received from.
-     */
-    private ClientInputContext context;
-
-    /**
-     * Constructs a new {@link ClientInputEvent};
+     * Creates a new client.
      *
-     * @param client    The client from which the input was received.
-     * @param context   The context from which the event was received from.
+     * @param selectionKey  The selection key to create the client from.
+     * @return  The created client.
      */
-    public ClientInputEvent(Client client, ClientInputContext context) {
-        this.client = client;
-        this.context = context;
-    }
-
-    /**
-     * Gets the client.
-     *
-     * @return  The client.
-     */
-    public Client getClient() {
-        return client;
-    }
-
-    /**
-     * Gets the context from which the event was received from.
-     *
-     * @return  The context.
-     */
-    public ClientInputContext getContext() {
-        return context;
-    }
+    public abstract Client create(SelectionKey selectionKey);
 }

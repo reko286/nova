@@ -20,18 +20,16 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.packet.impl;
+package org.nova.net.packet.transformers;
 
 import org.nova.net.packet.NumericBlock;
 import org.nova.net.packet.NumericType;
-import org.nova.net.packet.PacketBlock;
 import org.nova.net.packet.Transformer;
 
 import java.nio.ByteBuffer;
 
 /* Yes nested class static imports, bite me */
-import static org.nova.net.packet.impl.NumericTransformer.ByteOrder.*;
-import static org.nova.net.packet.impl.NumericTransformer.Translation.*;
+import static org.nova.net.packet.transformers.NumericTransformer.ByteOrder.*;
 
 import static org.nova.net.packet.NumericType.*;
 

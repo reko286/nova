@@ -37,6 +37,11 @@ public final class PacketBuilder {
     private String name;
 
     /**
+     * The size of the packet to build.
+     */
+    private int size;
+
+    /**
      * The packet blocks for the packet we are building.
      */
     private Map<String, PacketBlock> blocks;
@@ -46,10 +51,11 @@ public final class PacketBuilder {
      * 
      * @param name  The name of the packet to build.
      */
-    public PacketBuilder(String name) {
-        this.name = name;
-
+    public PacketBuilder(String name, int size) {
         blocks = new HashMap<String, PacketBlock>();
+
+        this.name = name;
+        this.size = size;
     }
 
     /**
@@ -207,6 +213,6 @@ public final class PacketBuilder {
      * @return The created packet.
      */
     public Packet toPacket() {
-        return new Packet(name, blocks);
+        return new Packet(name, size, blocks);
     }
 }

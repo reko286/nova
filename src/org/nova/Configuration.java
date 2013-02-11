@@ -64,6 +64,15 @@ public final class Configuration {
     }
 
     /**
+     * Get the scripts.
+     *
+     * @return  The scripts.
+     */
+    public List<Script> getScripts() {
+        return scripts;
+    }
+
+    /**
      * Sets the world id.
      *
      * @param worldId   The world id.

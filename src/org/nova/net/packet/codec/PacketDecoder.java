@@ -20,15 +20,13 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.packet.codec.impl;
+package org.nova.net.packet.codec;
 
 import org.nova.core.ServiceType;
 import org.nova.util.meta.PacketData;
 import org.nova.net.packet.Packet;
 import org.nova.net.packet.PacketBlock;
-import org.nova.net.packet.codec.PacketCodec;
 import org.nova.util.Decoder;
-import org.nova.net.packet.codec.impl.PacketDecoderState.Stage;
 
 import java.nio.ByteBuffer;
 
@@ -47,11 +45,6 @@ public final class PacketDecoder extends PacketCodec implements Decoder<Packet, 
     private int id;
 
     /**
-     * The service type to decorate for.
-     */
-    private ServiceType serviceType;
-
-    /**
      * The meta data to use to create new packets.
      */
     private PacketData data;
@@ -60,12 +53,10 @@ public final class PacketDecoder extends PacketCodec implements Decoder<Packet, 
      * Constructs a new {@link PacketDecoder};
      *
      * @param id            The id for this decoder.
-     * @param serviceType   The service type to decorate for.
      * @parma data      The meta data to use to create new packets.
      */
-    public PacketDecoder(int id, ServiceType serviceType, PacketData data) {
+    public PacketDecoder(int id, PacketData data) {
         this.id = id;
-        this.serviceType = serviceType;
         this.data = data;
     }
 
@@ -79,15 +70,6 @@ public final class PacketDecoder extends PacketCodec implements Decoder<Packet, 
     }
 
     /**
-     * Gets the service type to decorate for.
-     *
-     * @return  The service type.
-     */
-    public ServiceType getServiceType() {
-        return serviceType;
-    }
-
-    /**
      * Decodes the packet.
      *
      * @param state The state to use to decode the packet.
@@ -97,7 +79,7 @@ public final class PacketDecoder extends PacketCodec implements Decoder<Packet, 
     public Packet decode(PacketDecoderState state) {
 
         /* Check if we are waiting for all the bytes to be sent to read the packet */
-        if(!state.getStage().equals(Stage.AWAITING_BYTES)) {
+        if(!state.getStage().equals(PacketDecoderState.Stage.AWAITING_BYTES)) {
             throw new IllegalStateException("invalid stage");
         }
 
@@ -147,7 +129,7 @@ public final class PacketDecoder extends PacketCodec implements Decoder<Packet, 
 
         /* Encode each of the blocks into the buffer */
         for(String name : blocks) {
-            PacketBlock block = packet.getPacketBlock(name);
+            PacketBlock block = packet.getBlock(name);
 
             /* Decode the block */
             block.decode(state.getBuffer());

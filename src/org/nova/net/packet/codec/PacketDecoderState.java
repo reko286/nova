@@ -20,9 +20,7 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.packet.codec.impl;
-
-import org.nova.net.packet.codec.PacketCodecState;
+package org.nova.net.packet.codec;
 
 import java.nio.ByteBuffer;
 

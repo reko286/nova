@@ -23,14 +23,20 @@
 package org.nova.net;
 
 import org.nova.core.ServiceType;
-import org.nova.net.packet.codec.impl.PacketDecoderState;
-import org.nova.net.packet.codec.impl.PacketDecoderState.Stage;
-import org.nova.net.packet.codec.impl.PacketEncoderState;
+import org.nova.net.packet.Packet;
+import org.nova.net.packet.codec.PacketDecoderState;
+import org.nova.net.packet.codec.PacketEncoderState;
+import org.nova.net.packet.codec.PacketDecoderState.Stage;
 
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Hadyn Richard
@@ -38,9 +44,19 @@ import java.util.List;
 public final class Client {
 
     /**
-     * The channel for the client.
+     * The selection key for the client.
      */
-    private SocketChannel channel;
+    private SelectionKey selectionKey;
+
+    /**
+     * The packet handler for the client.
+     */
+    private PacketHandler packetHandler;
+
+    /**
+     * The message handler for the client.
+     */
+    private MessageHandler messageHandler;
 
     /**
      * The input buffer for the client.
@@ -74,10 +90,12 @@ public final class Client {
 
     /**
      * Constructs a new {@link Client};
+     *
+     * @param selectionKey      The selection key for this client.
+     * @param packetHandler     The packet handler for this client.
+     * @param messageHandler    The message handler for this client.
      */
-    public Client(SelectionKey selectionKey) {
-        channel = (SocketChannel) selectionKey.channel();
-
+    public Client(SelectionKey selectionKey, PacketHandler packetHandler, MessageHandler messageHandler) {
         decoderState = new PacketDecoderState();
         inputBuffer = ByteBuffer.allocate(5000);
         outputBuffer = ByteBuffer.allocate(5000);
@@ -85,6 +103,37 @@ public final class Client {
         /* Initialize the decoder state */
         decoderState.setBuffer(inputBuffer);
         decoderState.setStage(Stage.AWAITING_ID);
+
+        this.selectionKey = selectionKey;
+        this.packetHandler = packetHandler;
+        this.messageHandler = messageHandler;
+    }
+
+    /**
+     * Gets the packet handler for the client.
+     *
+     * @return  The packet handler.
+     */
+    public PacketHandler getPacketHandler() {
+        return packetHandler;
+    }
+
+    /**
+     * Gets the message handler for the client.
+     *
+     * @return  The message handler.
+     */
+    public MessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+
+    /**
+     * Gets the packet encoder state.
+     *
+     * @return  The encoder state.
+     */
+    public PacketEncoderState getEncoderState() {
+        return encoderState;
     }
 
     /**
@@ -151,6 +200,35 @@ public final class Client {
     }
 
     /**
+     * Writes a message to the client.
+     *
+     * @param message   The message to write.
+     */
+    public void writeMessage(Message message) {
+
+        /* Encode the message into a packet and check if it was successfully encoded */
+        Packet encodedPacket = messageHandler.encode(message);
+        if(encodedPacket == null) {
+            return;
+        }
+        
+        /* Set the encoder states packet */
+        encoderState.setPacket(encodedPacket);
+
+        /* Encode the packet into a buffer and check if it was successfully encoded */
+        ByteBuffer buffer = packetHandler.encode(encoderState);
+        if(buffer == null) {
+            return;
+        }
+
+        /* Put the buffer into the output buffer  */
+        outputBuffer.put(buffer);
+
+        /* Mark the selection key for write interest */
+        selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE);
+    }
+
+    /**
      * Disconnects the client.
      */
     public void disconnect() {
@@ -161,6 +239,7 @@ public final class Client {
         }
 
         try {
+            SelectableChannel channel = selectionKey.channel();
             channel.close();
         } catch(Throwable t) {
             throw new RuntimeException(t); // This shouldn't happen but if it does let off a bit of a warning

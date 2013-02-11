@@ -20,33 +20,27 @@
  * THE SOFTWARE.
  */
 
-package org.nova.event;
+package org.nova.task;
 
 /**
  * Created by Hadyn Richard
  */
-public abstract class Event<T> {
+public final class ExecuteWorkQueueTask extends Task {
 
     /**
-     * Constructs a new {@link Event};
-     *
-     * @param source    The source of the event.
+     * The work queue to execute.
      */
-    protected Event(T source) {
-        this.source = source;
+    private WorkQueue queue;
+
+    /**
+     * Constructs a new {@link ExecuteWorkQueueTask};
+     */
+    public ExecuteWorkQueueTask(WorkQueue queue) {
+        this.queue = queue;
     }
 
-    /**
-     * The source of the event.
-     */
-    private T source;
-
-    /**
-     * Gets the source of the event.
-     *
-     * @return  The source.
-     */
-    public T getSource() {
-        return source;
+    @Override
+    public void execute() {
+        queue.execute();
     }
 }

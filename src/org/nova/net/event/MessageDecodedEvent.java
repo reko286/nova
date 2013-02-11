@@ -20,33 +20,39 @@
  * THE SOFTWARE.
  */
 
-package org.nova.event;
+package org.nova.net.event;
+
+import org.nova.net.Client;
+import org.nova.net.Message;
 
 /**
  * Created by Hadyn Richard
  */
-public abstract class Event<T> {
+public final class MessageDecodedEvent extends ClientEvent {
 
     /**
-     * Constructs a new {@link Event};
-     *
-     * @param source    The source of the event.
+     * The decoded message from the client.
      */
-    protected Event(T source) {
-        this.source = source;
+    private Message message;
+
+    /**
+     * Constructs a new {@link MessageDecodedEvent};
+     *
+     * @param client    The source of the event.
+     * @param message   The decoded message from the client.
+     */
+    public MessageDecodedEvent(Client client, Message message) {
+        super(client);
+
+        this.message = message;
     }
 
     /**
-     * The source of the event.
-     */
-    private T source;
-
-    /**
-     * Gets the source of the event.
+     * Gets the decoded message from the client.
      *
-     * @return  The source.
+     * @return  The decoded message from the client.
      */
-    public T getSource() {
-        return source;
+    public Message getMessage() {
+        return message;
     }
 }

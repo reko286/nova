@@ -26,28 +26,28 @@ import org.nova.event.EventHandler;
 import org.nova.event.EventHandlerChainContext;
 import org.nova.net.Client;
 import org.nova.net.ClientPool;
-import org.nova.core.ServiceType;
 import org.nova.net.event.SocketChannelEvent;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
 
 /**
  * Created by Hadyn Richard
  */
-public final class SocketChannelAcceptEventHandler extends EventHandler<SocketChannelEvent> {
+public final class SocketChannelWriteEventHandler extends EventHandler<SocketChannelEvent> {
 
     /**
-     * The client pool to register clients to.
+     * The client pool to grab the clients from.
      */
     private ClientPool clientPool;
 
     /**
-     * Constructs a new {@link SocketChannelAcceptEventHandler};
-     * 
-     * @param clientPool    The client pool to register the clients to.
+     * Constructs a new {@link SocketChannelReadEventHandler};
+     *
+     * @param clientPool    The client pool to grab clients from.
      */
-    public SocketChannelAcceptEventHandler(ClientPool clientPool) {
+    public SocketChannelWriteEventHandler(ClientPool clientPool) {
         this.clientPool = clientPool;
     }
 
@@ -55,28 +55,37 @@ public final class SocketChannelAcceptEventHandler extends EventHandler<SocketCh
     public void handle(SocketChannelEvent event, EventHandlerChainContext<SocketChannelEvent> context) {
 
         /* Check if the interest is correct to be handled */
-        if(!event.getInterest().equals(SocketChannelEvent.SocketInterest.ACCEPT)) {
+        if(!event.getInterest().equals(SocketChannelEvent.SocketInterest.WRITE)) {
             return;
         }
+
+        /* Get the client for the selection key */
+        Client client = clientPool.getClient(event.getSelectionKey());
+
+        /* TODO: Figure out what we want to do if the client is null or even if this is possible */
 
         /* Stop the context from propagating further */
         context.stop();
 
-        /* Get the selection key to register the client as */
-        SelectionKey key = null;
-        try {
-            SocketChannel channel = event.getSource();
-            key = channel.register(event.getSelector(), SelectionKey.OP_READ);
-        } catch (Throwable t) {
+        /* Write the output buffer to the socket channel */
+        ByteBuffer outputBuffer = client.getOutputBuffer();
 
-            /* For some reason the channel was closed and we should return */
+        try {
+            event.getSource().write(outputBuffer);
+        } catch(IOException ex) {
+
+            /* Something went wrong and we need to disconnect the client */
+            client.disconnect();
             return;
         }
 
-        /* Create a new client from the selection key */
-        Client client = clientPool.create(key);
+        /* Compact the output buffer */
+        outputBuffer.compact();
 
-        /* By default set the handler type as the gateway */
-        client.setServiceType(ServiceType.GATEWAY);
+        /* Remove the write interest if there are no longer any messages/bytes to write */
+        if(!outputBuffer.hasRemaining()) {
+            SelectionKey key = event.getSelectionKey();
+            key.interestOps(key.interestOps() & ~SelectionKey.OP_WRITE);
+        }
     }
 }

@@ -1,0 +1,22 @@
+<!-- 
+
+	File to produce all the packet encoders for the server.
+
+ -->
+
+<encoders>
+
+	<encoder>
+
+		<packet></packet>
+
+		<id></id>
+
+		<blocks>
+			<block>
+				<name></name>
+			</block>
+		</blocks>
+		
+	</encoder>
+</encoders>

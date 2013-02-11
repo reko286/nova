@@ -26,16 +26,27 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import org.nova.core.Dispatcher;
 import org.nova.event.Event;
+import org.nova.event.EventHandlerChain;
+import org.nova.event.EventHandlerChainContext;
 import org.nova.net.event.SocketChannelEvent;
 import org.nova.net.event.SocketChannelEvent.SocketInterest;
+import org.nova.net.task.PropagationTask;
+import org.nova.task.PartitionedWorkQueue;
 
 /**
  * Created by Trey, Hadyn Richard
  */
 public final class Reactor extends Dispatcher {
+
+    /**
+     * The amount of tasks per each worker when propagating events.
+     */
+    private static final int TASKS_PER_WORKER = 50;
 
     /**
      * The selector to use for the reactor.
@@ -54,13 +65,22 @@ public final class Reactor extends Dispatcher {
     @Override
     public void dispatchEvents(ExecutorService executor) {
         try {
+
+            /* Create the work queue with the default amount of tasks per worker */
+            PartitionedWorkQueue workQueue = new PartitionedWorkQueue(TASKS_PER_WORKER);
+
             selector.select();
+
             Iterator<SelectionKey> it = selector.selectedKeys().iterator();
             while (it.hasNext()) {
+
+                /* Get and remove the next selection key */
                 SelectionKey key = it.next();
                 it.remove();
+
                 if (key.isValid()) {
-                    Event event = null;
+
+                    List<Event> events = new LinkedList<Event>();
 
                     if (key.isAcceptable()) {
 
@@ -76,27 +96,48 @@ public final class Reactor extends Dispatcher {
                         socketChannel.configureBlocking(false);
 
                         /* Create the socket channel event with the accept socket interest */
-                        event = new SocketChannelEvent(socketChannel, selector, key, SocketInterest.ACCEPT);
-                    } else if (key.isReadable()) {
+                        events.add(new SocketChannelEvent(socketChannel, selector, key, SocketInterest.ACCEPT));
+                    }
+
+                    if (key.isReadable()) {
                         
                         SocketChannel socketChannel = (SocketChannel) key.channel();
 
                         /* Create the socket channel event with the read socket interest */
-                        event = new SocketChannelEvent(socketChannel, selector, key, SocketInterest.READ);
-                    } else if (key.isWritable()) {
+                        events.add(new SocketChannelEvent(socketChannel, selector, key, SocketInterest.READ));
+                    }
+
+                    if (key.isWritable()) {
 
                         SocketChannel socketChannel = (SocketChannel) key.channel();
 
                         /* Create the socket channel event with the write socket interest */
-                        event = new SocketChannelEvent(socketChannel, selector, key, SocketInterest.WRITE);
+                        events.add(new SocketChannelEvent(socketChannel, selector, key, SocketInterest.WRITE));
                     }
 
-                    /* Propagate the event down the event handler chain if a valid interest was specified */
-                    if(event != null) {
-                        getHandlerChainFor(event).createNewEventHandlerChainContext(event).doAll();
+                    /* Propagate the events down the event handler chain if a valid interest was specified */
+                    if(!events.isEmpty()) {
+                        for(Event event : events) {
+
+                            /* Get and check if the event handler chain is valid */
+                            EventHandlerChain chain = getHandlerChainFor(event);
+                            if(chain == null) {
+                                continue;
+                            }
+
+                            /* Create the event handler chain context */
+                            EventHandlerChainContext context = chain.createNewEventHandlerChainContext(event);
+
+                            /* Add a new propagation task to the work queue */
+                            workQueue.add(new PropagationTask(context));
+                        }
                     }
                 }
             }
+
+            /* Execute all the queued tasks */
+            workQueue.execute(executor);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -20,15 +20,55 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.packet.codec;
+package org.nova.task;
 
-import org.nova.event.Event;
-import org.nova.net.event.PacketParsedEvent;
-import org.nova.util.Decoder;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.Executor;
 
 /**
  * Created by Hadyn Richard
  */
-public abstract class PacketEventDecoder implements Decoder<Event, PacketParsedEvent> {
+public final class WorkQueue {
 
+    /**
+     * The tasks to execute.
+     */
+    private Queue<Task> tasks;
+
+    /**
+     * Constructs a new {@link WorkQueue};
+     */
+    public WorkQueue() {
+        tasks = new LinkedList<Task>();
+    }
+
+    /**
+     * Adds a task to the queue.
+     *
+     * @param task  The task to add.
+     */
+    public void add(Task task) {
+        tasks.add(task);
+    }
+
+    /**
+     * Executes each of the tasks.
+     */
+    public void execute() {
+        for(Task task : tasks) {
+            task.execute();
+        }
+    }
+
+    /**
+     * Executes each of the tasks in this queue from an executor.
+     *
+     * @param executor  The executor to use to execute the tasks from.
+     */
+    public void execute(Executor executor) {
+        for(Task task : tasks) {
+            executor.execute(task.wrap());
+        }
+    }
 }

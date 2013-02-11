@@ -20,33 +20,30 @@
  * THE SOFTWARE.
  */
 
-package org.nova.event;
+package org.nova.task;
 
 /**
  * Created by Hadyn Richard
  */
-public abstract class Event<T> {
+public abstract class Task {
 
     /**
-     * Constructs a new {@link Event};
+     * Executes the task.
+     */
+    public abstract void execute();
+
+    /**
+     * Wraps this task into a runnable object.
      *
-     * @param source    The source of the event.
+     * @return  The created runnable object.
      */
-    protected Event(T source) {
-        this.source = source;
-    }
+    public final Runnable wrap() {
+        return new Runnable() {
 
-    /**
-     * The source of the event.
-     */
-    private T source;
-
-    /**
-     * Gets the source of the event.
-     *
-     * @return  The source.
-     */
-    public T getSource() {
-        return source;
+            @Override
+            public void run() {
+                execute();
+            }
+        };
     }
 }

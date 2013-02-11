@@ -35,6 +35,11 @@ public final class Packet {
     private String name;
 
     /**
+     * The size of the packet.
+     */
+    private int size;
+
+    /**
      * The packet blocks for this packet.
      */
     private Map<String, PacketBlock> packetBlocks;
@@ -42,11 +47,23 @@ public final class Packet {
     /**
      * Constructs a new {@link Packet};
      *
+     * @param name          The name of the packet.
+     * @param size          The size of the packet.
      * @param packetBlocks  The packet blocks for the packet.
      */
-    public Packet(String name, Map<String, PacketBlock> packetBlocks) {
+    public Packet(String name, int size, Map<String, PacketBlock> packetBlocks) {
         this.name = name;
+        this.size = size;
         this.packetBlocks = packetBlocks;
+    }
+
+    /**
+     * Gets the size of the packet.
+     *
+     * @return  The size.
+     */
+    public int getSize() {
+        return size;
     }
 
     /**
@@ -74,7 +91,7 @@ public final class Packet {
      * @param name  The name of the block.
      * @return      The block for the packet.
      */
-    public PacketBlock getPacketBlock(String name) {
+    public PacketBlock getBlock(String name) {
         return packetBlocks.get(name);
     }
 }

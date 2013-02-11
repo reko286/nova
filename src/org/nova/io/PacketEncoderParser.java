@@ -22,11 +22,8 @@
 
 package org.nova.io;
 
-import org.nova.core.ServiceType;
 import org.nova.net.packet.transformers.NumericTransformer;
-import org.nova.net.packet.transformers.NumericTransformer.ByteOrder;
-import org.nova.net.packet.transformers.NumericTransformer.Translation;
-import org.nova.util.meta.PacketDecoderData;
+import org.nova.util.meta.PacketEncoderData;
 import org.nova.util.xml.XMLNode;
 import org.nova.util.xml.XMLParser;
 import org.xml.sax.SAXException;
@@ -39,36 +36,36 @@ import java.util.List;
 /**
  * Created by Hadyn Richard
  */
-public final class PacketDecoderParser extends PacketCodecParser {
+public final class PacketEncoderParser extends PacketCodecParser {
 
     /**
-     * Constructs a new {@link PacketDecoderParser};
+     * Constructs a new {@link PacketEncoderParser};
      *
-     * @param is    The input stream to parse the packet decoders from.
+     * @param is    The input stream to parse the packet encoders from.
      */
-    public PacketDecoderParser(InputStream is) throws SAXException {
+    public PacketEncoderParser(InputStream is) throws SAXException {
         super(is);
     }
 
     /**
-     * Parses the packet decoder data from the XML file.
+     * Parses the packet encoder data from the XML file.
      *
-     * @return  The list of packet decoder data.
+     * @return  The list of packet encoder data.
      */
-    public List<PacketDecoderData> parse() throws IOException, SAXException {
+    public List<PacketEncoderData> parse() throws IOException, SAXException {
 
-        List<PacketDecoderData> dataList = new LinkedList<PacketDecoderData>();
+        List<PacketEncoderData> dataList = new LinkedList<PacketEncoderData>();
 
         /* Parse the XML file */
         XMLNode rootNode = parser.parse(is);
 
         /* Check to make sure that the root node is correctly named */
-        if(!rootNode.getName().equals("decoders")) {
+        if(!rootNode.getName().equals("encoders")) {
             throw new IOException("root node name is invalid");
         }
 
         /* Get each of the decoder declarations */
-        List<XMLNode> decoderNodes = rootNode.getChildren("decoder");
+        List<XMLNode> decoderNodes = rootNode.getChildren("encoder");
 
         for(XMLNode node : decoderNodes) {
 
@@ -89,7 +86,7 @@ public final class PacketDecoderParser extends PacketCodecParser {
             int id = Integer.parseInt(node.getFirstChild("id").getValue());
 
             /* Create the meta data */
-            PacketDecoderData data = new PacketDecoderData(id, packetName);
+            PacketEncoderData data = new PacketEncoderData(id, packetName);
 
             /* Parse the block data */
             parseBlockData(node, data);
@@ -97,7 +94,7 @@ public final class PacketDecoderParser extends PacketCodecParser {
             /* Add the meta data to the meta data list */
             dataList.add(data);
         }
-        
+
         return dataList;
     }
 }

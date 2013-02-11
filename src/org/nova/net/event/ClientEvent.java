@@ -20,33 +20,22 @@
  * THE SOFTWARE.
  */
 
-package org.nova.event;
+package org.nova.net.event;
+
+import org.nova.event.Event;
+import org.nova.net.Client;
 
 /**
  * Created by Hadyn Richard
  */
-public abstract class Event<T> {
+public abstract class ClientEvent extends Event<Client> {
 
     /**
      * Constructs a new {@link Event};
      *
-     * @param source    The source of the event.
+     * @param source The source of the event.
      */
-    protected Event(T source) {
-        this.source = source;
-    }
-
-    /**
-     * The source of the event.
-     */
-    private T source;
-
-    /**
-     * Gets the source of the event.
-     *
-     * @return  The source.
-     */
-    public T getSource() {
-        return source;
+    protected ClientEvent(Client source) {
+        super(source);
     }
 }

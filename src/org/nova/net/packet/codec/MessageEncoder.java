@@ -20,53 +20,15 @@
  * THE SOFTWARE.
  */
 
-package org.nova.net.event;
+package org.nova.net.packet.codec;
 
-import org.nova.event.Event;
-import org.nova.net.Client;
+import org.nova.net.Message;
 import org.nova.net.packet.Packet;
+import org.nova.util.Encoder;
 
 /**
  * Created by Hadyn Richard
  */
-public final class PacketParsedEvent extends Event {
+public abstract class MessageEncoder implements Encoder<Packet, Message> {
 
-    /**
-     * The client from which the packet was parsed for.
-     */
-    private Client client;
-
-    /**
-     * The packet that was parsed.
-     */
-    private Packet packet;
-
-    /**
-     * Constructs a new {@link PacketParsedEvent};
-     *
-     * @param client    The client from which the packet was parsed for.
-     * @param packet    The packet that was parsed.
-     */
-    public PacketParsedEvent(Client client, Packet packet) {
-        this.client = client;
-        this.packet = packet;
-    }
-
-    /**
-     * Gets the client from which the packet came from.
-     *
-     * @return  The client.
-     */
-    public Client getClient() {
-        return client;
-    }
-
-    /**
-     * Gets the packet that was parsed.
-     *
-     * @return  The packet.
-     */
-    public Packet getPacket() {
-        return packet;
-    }
 }

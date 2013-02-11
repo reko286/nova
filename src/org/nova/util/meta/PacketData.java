@@ -134,7 +134,7 @@ public final class PacketData {
     public Packet create() {
 
         /* Create a new packet build from the descriptor */
-        PacketBuilder builder = new PacketBuilder(name);
+        PacketBuilder builder = new PacketBuilder(name, size);
 
         /* Create a block for each variable */
         for(PacketVariable variable : variables) {

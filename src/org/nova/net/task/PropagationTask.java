@@ -20,33 +20,32 @@
  * THE SOFTWARE.
  */
 
-package org.nova.event;
+package org.nova.net.task;
+
+import org.nova.event.EventHandlerChainContext;
+import org.nova.task.Task;
 
 /**
  * Created by Hadyn Richard
  */
-public abstract class Event<T> {
+public final class PropagationTask extends Task {
 
     /**
-     * Constructs a new {@link Event};
-     *
-     * @param source    The source of the event.
+     * The event handler chain context to use to propagate the event down with.
      */
-    protected Event(T source) {
-        this.source = source;
+    private EventHandlerChainContext context;
+
+    /**
+     * Constructs a new {@link PropagationTask};
+     *
+     * @param context   The event handler chain context to use to propagate the event down with.
+     */
+    public PropagationTask(EventHandlerChainContext context) {
+        this.context = context;
     }
 
-    /**
-     * The source of the event.
-     */
-    private T source;
-
-    /**
-     * Gets the source of the event.
-     *
-     * @return  The source.
-     */
-    public T getSource() {
-        return source;
+    @Override
+    public void execute() {
+        context.doAll();
     }
 }

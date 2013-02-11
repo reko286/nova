@@ -31,7 +31,7 @@ import java.nio.channels.SocketChannel;
 /**
  * Created by Hadyn Richard
  */
-public final class SocketChannelEvent extends Event {
+public final class SocketChannelEvent extends Event<SocketChannel> {
 
     /**
      * The enumeration for different interests that can be indicated from a socket channel.
@@ -53,11 +53,6 @@ public final class SocketChannelEvent extends Event {
          */
         WRITE
     }
-
-    /**
-     * The socket channel to read from.
-     */
-    private SocketChannel socketChannel;
 
     /**
      * The selector which the read interest was indicated from.
@@ -83,19 +78,11 @@ public final class SocketChannelEvent extends Event {
      * @param interest      The interest of the socket.
      */
     public SocketChannelEvent(SocketChannel socketChannel, Selector selector, SelectionKey selectionKey, SocketInterest interest) {
-        this.socketChannel = socketChannel;
+        super(socketChannel);
+
         this.selector = selector;
         this.selectionKey = selectionKey;
         this.interest = interest;
-    }
-
-    /**
-     * Gets the socket channel that triggered this event.
-     *
-     * @return  The socket channel.
-     */
-    public SocketChannel getSocketChannel() {
-        return socketChannel;
     }
 
     /**

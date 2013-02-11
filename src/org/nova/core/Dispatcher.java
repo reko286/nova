@@ -24,7 +24,6 @@ package org.nova.core;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import org.nova.event.Event;
 import org.nova.event.EventHandler;
