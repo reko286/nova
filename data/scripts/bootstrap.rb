@@ -1,58 +1,101 @@
 require 'java'
 
-java_import 'org.nova.event.EventHandlerChainDecorator'
-java_import 'org.nova.net.event.handler.PacketParsedEventHandler'
-java_import 'org.nova.net.packet.codec.PacketDecoder'
+java_import 'org.nova.net.packet.codec.MessageDecoder'
+java_import 'org.nova.net.packet.codec.MessageEncoder'
 
-# The class used to decorate the packet parsed event handler chain.
-class PacketParsedEventHandlerChainDecorator < EventHandlerChainDecorator
+# Notes:
+#
+#         - Possibly for message decoder allow user to set the packaging instead of forcing a specific package.
 
-	# Method to decorate the chain.
-	def decorate(chain)
-
-		# Create the event decoder context and call the packet decoders proc.
-		context = PacketDecoderChainContext.new chain
-		packet_decoders_proc.call context
-	end
+# Convert a lower case underscore delimited string to camel-case.
+class String
+  def camelize
+    gsub(/(?:^|_)(.)/) { $1.upcase }
+  end
 end
 
-# The class used to help register event decoders in context to the register event decoders method.
-class PacketDecoderChainContext
+# The class used to help register message decoders to the message handler context.
+class MessageDecoderContext
 
-	# Method to initialize the context.
-	def initialize(chain)
-		@chain = chain
-	end
+  # Method to initialize the context.
+  def initialize(handler)
+    @handler = handler
+  end
 
-	# Method to register an event decoder to the event handler chain.
-	def register(name, &block)
+  # Method to register an event decoder to the event handler chain.
+  def register(name, &block)
 
-		# Create the packet parsed event handler and add it to the back of the chain.
-		handler = PacketParsedEventHandler.new name, ProcPacketDecoder.new(block)
-		@chain.add_to_back handler
-	end
+    # Create the message decoder and register it to the handler.
+    decoder = ProcMessageDecoder.new block
+    @handler.register_decoder name, decoder
+  end
 end
 
-# The class used to wrap a proc block for decoding a packet to an event.
-class ProcPacketDecoder < PacketDecoder
+# The class used to help register message encoders to the message handler context.
+class MessageEncoderContext
 
-	# Method to initialize the decoder.
-	def initialize(proc)
-		@proc = proc
-	end
+  # Method to initialize the context.
+  def initialize(handler)
+    @handler = handler
+  end
 
-	# Method to decode the packet parsed event to a new event.
-	def decode(event)
-		proc.call event.client, event.packet
-	end
+  # Method to register an event encoder to the event handler chain.
+  def register(class_name, &block)
+
+    # Get the message class from the provided class name.
+    class_name = class_name.camelize.concat "Message"
+    message_class = Java::JavaClass.for_name("org.nova.net.messages.".concat class_name)
+
+    # Create the message encoder and register it to the handler.
+    encoder = ProcMessageEncoder.new block
+    @handler.register_encoder message_class, encoder
+  end
 end
 
-# Method to register all the event decoders to the event handler chain.
-def register_packet_decoders(&block)
+# The class used to wrap a proc block for decoding a packet to a message.
+class ProcMessageDecoder < MessageDecoder
 
-	# Set the event decoders proc
-	packet_decoders_proc = block														
+  # Method to initialize the decoder.
+  def initialize(proc)
+    super()
+
+    @proc = proc
+  end
+
+  # Method to decode the packet to a new message.
+  def decode(packet)
+    proc.call packet
+  end
 end
 
-# Set the packet decoder chain decorator
-$ctx.setPacketDecoderChainDecorator PacketParsedEventHandlerChainDecorator.new
+# The class used to wrap a proc block for decoding a message to a packet.
+class ProcMessageEncoder < MessageEncoder
+
+  # Method to initialize the decoder.
+  def initialize(proc)
+    super()
+
+    @proc = proc
+  end
+
+  # Method to decode the message to a new packet.
+  def encode(msg)
+    proc.call msg
+  end
+end
+
+# Method to register all the message decoders to the message handler.
+def register_message_decoders(&block)
+
+  # Create the message decoder context and register all the message decoders to the environment context message handler.
+  ctx = MessageDecoderContext.new $ctx.message_handler    
+  block.call ctx                      
+end
+
+# Method to register all the message encoders to the message handler.
+def register_message_encoders(&block)
+
+  # Create the message decoder context and register all the message decoders to the environment context message handler.
+  ctx = MessageEncoderContext.new $ctx.message_handler    
+  block.call ctx                      
+end

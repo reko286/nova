@@ -26,6 +26,7 @@ import org.nova.core.ServiceType;
 import org.nova.net.packet.transformers.NumericTransformer;
 import org.nova.net.packet.transformers.NumericTransformer.ByteOrder;
 import org.nova.net.packet.transformers.NumericTransformer.Translation;
+import org.nova.util.meta.PacketCodecData;
 import org.nova.util.meta.PacketDecoderData;
 import org.nova.util.xml.XMLNode;
 import org.nova.util.xml.XMLParser;
@@ -39,7 +40,7 @@ import java.util.List;
 /**
  * Created by Hadyn Richard
  */
-public final class PacketDecoderParser extends PacketCodecParser {
+public final class PacketDecoderParser<T extends PacketCodecData> extends PacketCodecParser {
 
     /**
      * Constructs a new {@link PacketDecoderParser};

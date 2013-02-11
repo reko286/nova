@@ -22,7 +22,7 @@
 
 package org.nova.util.script.context;
 
-import org.nova.event.EventHandlerChainDecorator;
+import org.nova.net.MessageHandler;
 import org.nova.util.script.EnvironmentContext;
 
 /**
@@ -31,9 +31,9 @@ import org.nova.util.script.EnvironmentContext;
 public final class GameEnvironmentContext extends EnvironmentContext {
 
     /**
-     * The packet decoder event handler chain decorator.
+     * The message handler for the server.
      */
-    private EventHandlerChainDecorator packetDecoderChainDecorator;
+    private MessageHandler messageHandler;
 
     /**
      * Constructs a new {@link GameEnvironmentContext};
@@ -41,11 +41,20 @@ public final class GameEnvironmentContext extends EnvironmentContext {
     public GameEnvironmentContext() {}
 
     /**
-     * Sets the packet decoder event handler chain decorator.
+     * Sets the message handler for the server.
      *
-     * @param decorator The event handler chain decorator.
+     * @param messageHandler    The message handler.
      */
-    public void setPacketDecoderChainDecorator(EventHandlerChainDecorator decorator) {
-        packetDecoderChainDecorator = decorator;
+    public void setMessageHandler(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
+    /**
+     * Gets the message handler for the server.
+     *
+     * @return  The message handler.
+     */
+    public MessageHandler getMessageHandler() {
+        return messageHandler;
     }
 }

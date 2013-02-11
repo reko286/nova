@@ -28,7 +28,7 @@ import org.nova.net.packet.codec.PacketEncoder;
 /**
  * Created by Hadyn Richard
  */
-public class PacketEncoderData extends PacketCodecData<PacketEncoder> {
+public final class PacketEncoderData extends PacketCodecData<PacketEncoder> {
 
     /**
      * Constructs a new {@link PacketDecoderData};

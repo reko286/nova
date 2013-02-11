@@ -22,10 +22,8 @@
 
 package org.nova.util.meta;
 
-import org.nova.core.ServiceType;
 import org.nova.net.packet.Transformer;
 import org.nova.net.packet.codec.PacketCodec;
-import org.nova.net.packet.codec.PacketDecoder;
 
 import java.util.LinkedList;
 import java.util.List;

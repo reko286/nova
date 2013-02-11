@@ -3,9 +3,12 @@
 
 				- Scripts will be evaluated in order of their declaration!
 -->
+
 <config>
 
 	<global>
+
+		<!-- Declare each of the scripts to load on startup -->
 
 		<script>
 			<name>bootstrap</name>
@@ -13,8 +16,13 @@
 		</script>
 
 		<script>
-			<name>packet_decoders</name>
-			<source>packet_decoders.rb</source>
+			<name>message_decoders</name>
+			<source>message_decoders.rb</source>
+		</script>
+
+		<script>
+			<name>message_encoders</name>
+			<source>message_encoders.rb</source>
 		</script>
 	</global>
 	

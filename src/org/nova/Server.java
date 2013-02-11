@@ -23,6 +23,8 @@
 package org.nova;
 
 import org.nova.io.ConfigurationParser;
+import org.nova.net.MessageHandler;
+import org.nova.net.PacketHandler;
 import org.nova.util.script.Script;
 import org.nova.util.script.ScriptEnvironment;
 import org.nova.util.script.context.GameEnvironmentContext;
@@ -112,6 +114,9 @@ public final class Server {
 
         GameEnvironmentContext environmentContext = new GameEnvironmentContext();
         ScriptEnvironment scriptEnvironment = new ScriptEnvironment("jruby", environmentContext);
+
+        MessageHandler handler = new MessageHandler();
+        environmentContext.setMessageHandler(handler);
 
         logger.info("Evaluating each of the startup scripts...");
         for(Script script : configuration.getScripts()) {
