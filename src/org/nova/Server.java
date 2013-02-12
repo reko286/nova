@@ -68,18 +68,18 @@ public final class Server {
                            ".JML.    YM  `Ybmd9'     W    `Moo9^Yo.                                    \n" +
                            "-----------------------------------------------------------------------------");
     
-        logger.info("Starting up...");
+        logger.info("Starting Up...");
 
         /* Get the server mode from the arguments */
         ServerMode serverMode = ServerMode.valueOf(args[0].toUpperCase());
         if(serverMode == null) {
-            throw new RuntimeException("invalid server mode");
+            throw new RuntimeException("Invalid Server Mode");
         }
         
         Server server = new Server();
         server.init(serverMode);
 
-        logger.info("Finished loading!");
+        logger.info("Finished Loading!");
     }
 
     /**
@@ -109,7 +109,7 @@ public final class Server {
         /* Get the configuration for the mode and check if it is valid */
         configuration = configurations.get(mode);
         if(configuration == null) {
-            throw new RuntimeException("EEK! no such configuration for server mode");
+            throw new RuntimeException("EEK! no such configuration for server mode"); 
         }
 
         GameEnvironmentContext environmentContext = new GameEnvironmentContext();
